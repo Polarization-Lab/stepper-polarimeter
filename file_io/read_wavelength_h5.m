@@ -1,4 +1,4 @@
-function [] = read_wavelengthh5(filename,wavelength)
+function [] = read_wavelength_h5(filename,wavelength)
 %READ_WAVELENGTHH5  outputs data sotred in wavelength file
 %  show measurement parameters for wavelength
 
