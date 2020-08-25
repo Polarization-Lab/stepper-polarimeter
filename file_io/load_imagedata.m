@@ -49,9 +49,7 @@ for i = 1:meas_num
     end
     mean_img = mean_img./fm;
     
-    c=imagesc(mean_img);
-    colorbar
-    
+    %load in pre allocated array
     image_data(:,:,i) = mean_img ;
     
     clear images;clear mean_img
