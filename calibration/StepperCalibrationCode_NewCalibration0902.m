@@ -16,12 +16,13 @@ testimsz_2 = 1500;
 
 
 %Calibration file path
-calibrationFilePath = 'Y:\Measurements\Dichroic_Analysis\air-01-Sep-2020.h5';
-testFilePath = '\\765-polarizer.optics.arizona.edu\stepper\Stepper Polarimeter\Stepper Software Rebuild\TestData\Dichroic\dichroic45-18-Aug-2020.h5';
+calibrationFilePath = 'D:\Measurements\Dichroic_Analysis\air-01-Sep-2020.h5';
+testFilePath = 'D:\Measurements\Dichroic_Analysis\dichroic-45-07-Sep-2020.h5';
 
 for ii = 1:length(LambdaList) %for loading all lambda(s)
 %Get h5 reference data
     Lambda = LambdaList(ii);
+
     refVecs(ii,:) = NormalizedReferenceData(calibrationFilePath,Lambda,nSteps);
 
 %Grab measured data from h5 file
@@ -31,6 +32,11 @@ end
 
 %Find the max
 mx = max(meandata,[],'all');
+
+f = msgbox('Operation Completed');
+%%
+load handel
+sound(y,Fs)
 
 %%
 clc;
@@ -51,7 +57,7 @@ func = @(fitvals, inpvals) AirCalRoutine_MKeditLSQ(fitvals(1:PixelCount*nLambda)
 %Set bounds and known values, likely not optimal ask Meredith
 % lb = [Amp ];
 % ub = [3*mx*ones(1,PixelCount) pi*ones(1,PixelCount) pi*ones(1,PixelCount)];
-lb = [mx*ones(1,PixelCount*nLambda) -pi*ones(1,nLambda) -pi/2 -pi*ones(1,nLambda) -pi/2 -pi/2];
+lb = [mx*zeros(1,PixelCount*nLambda) -pi*ones(1,nLambda) -pi/2 -pi*ones(1,nLambda) -pi/2 -pi/2];
 ub = [3*mx*ones(1,PixelCount*nLambda) pi*ones(1,nLambda) pi/2 pi*ones(1,nLambda) pi/2 pi/2];
 
 
@@ -60,7 +66,7 @@ ub = [3*mx*ones(1,PixelCount*nLambda) pi*ones(1,nLambda) pi/2 pi*ones(1,nLambda)
 
 %Starting fit guess
 % fitguess = [2*mx*ones([1,PixelCount]), 2*pi/3*ones([1,PixelCount]), 2*pi/3*ones([1,PixelCount])];, 2*pi/3, 0, 2*pi/3, 0, 0
-fitguess = [2*mx*ones([1,PixelCount*nLambda]), 2*pi/3*ones(1,nLambda), 0, 2*pi/3*ones(1,nLambda), 0, 0];
+fitguess = [mx*ones([1,PixelCount*nLambda]), 2*pi/3*ones(1,nLambda), 0, 2*pi/3*ones(1,nLambda), 0, 0];
 %%
 %Least squares curve fitting and storing into caldata
 [fits,resnorm,res] = lsqcurvefit(func, fitguess, nSteps, meandata,lb,ub);
@@ -139,20 +145,35 @@ tic
 [~,W] = AirCalRoutine_MKedit2(Amp,dg_rad,DelRad_g,da_rad,DelRad_a,LP_Rad,nSteps);
 toc
 %% Generate Mueller Matrices
-refVecsImgs = NormalizedReferenceData(testFilePath, Lambda, nSteps);
-[imgdata ROIimg] = ReadDataImages(testFilePath, Lambda,refVecsImgs,nSteps);
+% refVecsImgs = NormalizedReferenceData(testFilePath, Lambda, nSteps);
+% [imgdata ROIimg] = ReadDataImages(testFilePath, Lambda,refVecsImgs,nSteps);
+
+for ii = 1:length(LambdaList) %for loading all lambda(s)
+%Get h5 reference data
+    Lambda = LambdaList(ii);
+%     refVecs(ii,:) = NormalizedReferenceData(calibrationFilePath,Lambda,nSteps);
+    if Lambda == 470
+        Lambda = 480;
+        ii = ii + 1;
+    end
+%Grab measured data from h5 file
+%     meandata(ii,:,:,:) = ReadCalImages(calibrationFilePath,Lambda,refVecs,nSteps); %needs to use dark field correction code at some point
+    imgdata(ii,:,:,:)= ReadDataImagesNoRef(testFilePath,Lambda,nSteps);
+end
 % save('dichroic_575_45','imgdata','ROIimg');
 f = msgbox('Operation Completed');
 %%
 
 tic
-nLambda=length(Lambda);
+nLambda=length(LambdaList);
 M = zeros(nLambda,16,1500*1500);
 for n = 1:nLambda
     Winv = pinv(squeeze(W(n,:,:)));
-    M(n,:,:) = Winv*(reshape(imgdata(:,:,:),nSteps,1500*1500)./repmat(Amp(:)',[nSteps 1]));
+    M(n,:,:) = Winv*(reshape(squeeze(imgdata(n,:,:,:)),nSteps,1500*1500)./repmat(ampcaldata(n,:),[nSteps 1]));
 end
-mmVecs = reshape(squeeze(M(1,:,:)),16,1500,1500);
+for n = 1:nLambda
+mmVecs(n,:,:,:) = reshape(squeeze(M(n,:,:)),16,1500,1500);
+end
 toc
 %% .h5 ROI image
 tic
@@ -186,20 +207,25 @@ toc
 %% Display image MMs
 tic
 close all;
-%mx=max(mmVecs(:));
-
-lims = [-abs(max(mmVecs,[],'all')) abs(max(mmVecs,[],'all'))];
-
 mmNum = [ "00" "01" "02" "03" '10' '11' '12' '13' '20' '21' '22' '23' '30' '31' '32' '33'];
-for p=1:16
-    subplot(4,4,p)
-    imshow(squeeze(mmVecs(p,:,:)),lims,'Colormap',GWP);
-%     imshow(TotalMM(p),lims,'Colormap',GWP);
-    title(strcat('M',mmNum(p)))
+%mx=max(mmVecs(:));
+for n = 1:nLambda
+    lims = [-abs(max(squeeze(mmVecs(n,:)),[],'all')) abs(max(squeeze(mmVecs(n,:)),[],'all'))];
+
+
+    for p=1:16
+        subplot(4,4,p)
+        imshow(squeeze(mmVecs(n,p,:,:)),lims,'Colormap',GWP);
+    %     imshow(TotalMM(p),lims,'Colormap',GWP);
+        title(strcat('M',mmNum(p)))
+    end
+    figure(1)
+    t = (subplot(4,4,16).Position);
+    colorbar('position', [t(1)+t(3) t(2) t(3)/3 t(4)*4.7] );
+    sgtitle(['Dichroic 45' char(176) ' ' num2str(LambdaList(n)) 'nm' ])
+    saveas(gcf,['FullROILambda ' num2str(LambdaList(n)) '.png']);
+    close all;
 end
-t = (subplot(4,4,16).Position);
-colorbar('position', [t(1)+t(3) t(2) t(3)/3 t(4)*4.7] );
-sgtitle(['Dichroic 45' char(176) ' ' num2str(Lambda) 'nm' ])
 toc
 %% Display Normalized MM
 tic
@@ -215,6 +241,7 @@ for p=1:16
 %     imshow(TotalMM(p),lims,'Colormap',GWP);
     title(strcat('M',mmNum(p)))
 end
+figure(n)
 t = (subplot(4,4,16).Position);
 colorbar('position', [t(1)+t(3) t(2) t(3)/3 t(4)*4.7] );
 sgtitle(['Dichroic 45' char(176) ' ' num2str(Lambda) 'nm Norm' ])
