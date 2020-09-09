@@ -1,40 +1,24 @@
 %create HDF5 dataset
 
 %writefilepath
-fp = 'c:/Stepper Polarimeter/Stepper Software Rebuild/TestData/Dichroic/';
+fp = 'D:\Measurements\Dichroic_Analysis\';
 date = date();
 starttime = datestr(now);
 
-usernotes = 'taken by khart ; dichroic at 0 degrees, new exposures';
-
-fn = 'dichroic0';
+usernotes = 'taken by khart ; dichroic at 0 degrees,matches exposures and wacelenths from air measurement taken sept 1 ';
+fn = 'dichroic-0';
 name = strcat(fp,fn,'-',date,'.h5');
 
 num_meas = 64;
 
-wavelength=450;
-exposure = 0.35;
-framesPerTrigger = 3;
-homeMotor(xps)
-wavelengthSweep(name,wavelength,exposure ,vid,num_meas, COMmono,COMdmm, xps, framesPerTrigger)
-
-wavelength=550;
-exposure = 0.15;
-framesPerTrigger = 3;
-homeMotor(xps)
-wavelengthSweep(name,wavelength,exposure ,vid,num_meas, COMmono,COMdmm, xps, framesPerTrigger)
-
-wavelength=650;
-exposure = 0.17;
-framesPerTrigger = 3;
-homeMotor(xps)
-wavelengthSweep(name,wavelength,exposure ,vid,num_meas, COMmono,COMdmm, xps, framesPerTrigger)
-
-wavelength=750;
-exposure = 0.25;
-framesPerTrigger = 3;
-homeMotor(xps)
-wavelengthSweep(name,wavelength,exposure ,vid,num_meas, COMmono,COMdmm, xps, framesPerTrigger)
+%set up measurement loop
+for i = 1:31 
+    wavelength=waves(i);
+    exposure = exposures(i);
+    framesPerTrigger = 3;
+    homeMotor(xps)
+    wavelengthSweep(name,wavelength,exposure ,vid,num_meas, COMmono,COMdmm, xps, framesPerTrigger)    
+end
 
 endtime = datestr(now);
 
@@ -47,9 +31,8 @@ endtime = datestr(now);
  h5writeatt(name,'/images/','PSG_positions', PSG); 
  h5writeatt(name,'/images/','PSA_positions', PSA); 
 
- % close ports 
-fclose('all')
-clear all
+% close ports 
+fclose('all');
 close all
 clc
 instrreset
