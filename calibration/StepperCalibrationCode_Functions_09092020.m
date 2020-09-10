@@ -165,106 +165,28 @@ end
 
 toc
 %% .h5 ROI image1
-tic
-AmpArray = reshape(Amp(:),30,5,5);
-nLambda=length(LambdaList);
-M = zeros(nLambda,16,ROI*ROI);
-for n = 1:nLambda
-    Winv = pinv(squeeze(W(n,:,:)));
-    M(n,:,:) = Winv*(reshape(squeeze(ROIimg(n,:,:,:)),nSteps,ROI*ROI)./repmat(AmpArray(n,:),[nSteps 1]));
-end
-toc
-%%
-for n = 1:nLambda
-    mmVecs(n,:,:,:) = reshape(squeeze(M(n,:,:)),16,ROI,ROI);
-end
+mmVecs = CreateMuellerMatrix(Amp,W,nLambda,ROI,ROIimg,nSteps);
 %% Normalize MM
 for ii = 1:16
     NormMMVecs(ii,:,:) = squeeze(mmVecs(ii,:,:))./squeeze(mmVecs(1,:,:));
 end
 
 %% Create averaged scalar MM (Table form)
-tic
-for p=1:16
-    avgMM(p) = mean(squeeze(mmVecs(p,:,:))/mean(squeeze(mmVecs(1,:,:))),'all');
-end
-NormAvgMM = reshape(avgMM,[4 4])'
-
-for p=1:16
-    TotalMM(p) = mean(squeeze(mmVecs(p,:,:)),'all');
-end
-TotalMM2 = reshape(TotalMM,[4 4])'
-toc
+AvgMMTable(mmVecs,450,LambdaList)
 
 %% Display image MMs
-tic
-close all;
-mkdir(['Y:\Measurements\Dichroic_Analysis\MM_img\dichroic-45-small-ROI2-' date]);
-%mx=max(mmVecs(:));
-mmNum = [ "00" "01" "02" "03" '10' '11' '12' '13' '20' '21' '22' '23' '30' '31' '32' '33'];
-
-for nLambda = 1:30
-    lims = [-abs(max(squeeze(mmVecs(nLambda,:)),[],'all')) abs(max(squeeze(mmVecs(nLambda,:)),[],'all'))];
-
-
-    for p=1:16
-        subplot(4,4,p)
-        imshow(squeeze(mmVecs(nLambda,p,:,:)),lims,'Colormap',GWP);
-    %     imshow(TotalMM(p),lims,'Colormap',GWP);
-        title(strcat('M',mmNum(p)))
-    end
-    figure(1)
-    t = (subplot(4,4,16).Position);
-    colorbar('position', [t(1)+t(3) t(2) t(3)/3 t(4)*4.7] );
-    sgtitle(['Dichroic 45' char(176) ' ' num2str(LambdaList(nLambda)) 'nm' ])
-    F(nLambda) = getframe(gcf);
-    saveas(gcf,fullfile(['Y:\Measurements\Dichroic_Analysis\MM_img\dichroic-45-small-ROI2-' date],['Lambda ' num2str(LambdaList(nLambda)) '_' date '.png']));
-    close all
-end
-toc
-
-%%
-writerObj = VideoWriter('dichroicSmallROI.avi');
-writerObj.FrameRate = 1;
-
-open(writerObj);
-for i = 1:length(F)
-    frame = F(i);
-    writeVideo(writerObj,frame);
-end
-close(writerObj);
-
+DisplayMM(mmVecs,nLambda,LambdaList)
 
 
 %% Display Normalized MM
-tic
-close all;
-%mx=max(mmVecs(:));
+DisplayNormMM(mmVecs,LambdaList,nLambda)
 
-lims = [-abs(max(NormMMVecs,[],'all')) abs(max(NormMMVecs,[],'all'))];
-
-mmNum = [ "00" "01" "02" "03" '10' '11' '12' '13' '20' '21' '22' '23' '30' '31' '32' '33'];
-for p=1:16
-    subplot(4,4,p)
-    imshow(squeeze(NormMMVecs(p,:,:)),lims,'Colormap',GWP);
-%     imshow(TotalMM(p),lims,'Colormap',GWP);
-    title(strcat('M',mmNum(p)))
-end
-t = (subplot(4,4,16).Position);
-colorbar('position', [t(1)+t(3) t(2) t(3)/3 t(4)*4.7] );
-sgtitle(['Dichroic 45' char(176) ' ' num2str(Lambda) 'nm Norm' ])
-toc
 %% MM transmission curves 
-close all;
-for p = 1:16
-    subplot(4,4,p)
-    plot(LambdaList,mean(squeeze(mmVecs(:,p,:,:)),[2 3]));
-    xlabel('\lambda (nm)')
-    title(strcat('M',mmNum(p)))
-    ylim([-1.5 1.5])
-end
-sgtitle('MM Transmission curves')
+
+TransmissionMMPlot(LambdaList,mmVecs)
 %% M_xy setup for easier calculations
+Label = ['Dichroic 45' char(176)];
+
 for n = 1:nLambda
     Label = ['Dichroic 45' char(176)];
     WL = num2str(Lambda);
@@ -288,91 +210,14 @@ for n = 1:nLambda
 end
 
 M_00(M_00 == 0) = NaN;
-%% Average Transmission
-mkdir(['Y:\Measurements\Dichroic_Analysis\MM_img\dichroic-45-small-ROI-' date]);
-meanTransmission = mean(M_00,[2 3]);
-plot(LambdaList,meanTransmission,'k-*')
-title('Avg Transmission over \lambda')
-xlabel('\lambda (nm)')
-ylabel('Transmission')
-saveas(gcf,fullfile(['Y:\Measurements\Dichroic_Analysis\MM_img\dichroic-45-small-ROI-' date],'Avg_Transmission_Lambda.png'));
+
 %% Diattenuation
-close all;
-mkdir(['Y:\Measurements\Dichroic_Analysis\Diattenuation\dichroic-45-small-ROI-' date]);
-
-for n = 1:nLambda
-%Equation 6.41 page 177 from Russell's book
-% Dia = sqrt(mmVecs(2,:,:).^2 + mmVecs(3,:,:).^2 + mmVecs(4,:,:).^2)./mmVecs(1,:,:);
-Dia(n,:,:) = sqrt(M_01(n,:,:).^2 + M_02(n,:,:).^2 + M_03(n,:,:).^2)./M_00(n,:,:);
-%Plot Diattenuation map and histogram
-figure(1)
-subplot(1,2,1)
-imshow(squeeze(Dia(n,:,:)),'colormap',parula);colorbar;
-title(['2D Diattenuation per pixel ' Label num2str(LambdaList(n))]);
-subplot(1,2,2)
-histogram(squeeze(Dia(n,:,:)))
-title(['Diattenuation Histogram (' num2str(LambdaList(n)) ')']);
-saveas(gcf,fullfile(['Y:\Measurements\Dichroic_Analysis\Diattenuation\dichroic-45-small-ROI-' date],['Lambda ' num2str(LambdaList(n)) '_' date '.png']));
-close all;
-end
-%%
-avgDia = mean(Dia,[2 3]);
-plot(LambdaList,avgDia,'b*-');
-title('Avg Diattenuation over \lambda')
-xlabel('\lambda (nm)')
-ylabel('Diattenuation')
-saveas(gcf,fullfile(['Y:\Measurements\Dichroic_Analysis\Diattenuation\dichroic-45-small-ROI-' date],['Avg_Dia_Lambda.png']));
+DiattenuationMM(mmVecs,LambdaList,nLambda,Label)
 %% Linear Diattenuation
-mkdir(['Y:\Measurements\Dichroic_Analysis\Linear_Diattenuation\dichroic-45-small-ROI-' date]);
+LinDiattenuationMM(mmVecs,LambdaList,nLambda,Label)
 
-edges = linspace(-1.5,1.5,50);
-
-for n = 1:nLambda
-    %Equation 6.49 page 179 from Russell's book
-    LinDia(n,:,:) = sqrt(M_01(n,:,:).^2 + M_02(n,:,:).^2)./M_00(n,:,:);
-    %Plot LD map and histogram
-    figure(2)
-    subplot(1,2,1)
-    imshow(squeeze(LinDia(n,:,:)),[0 1],'colormap',parula);colorbar;
-    title(['2D Linear Diatten. per pixel ' Label num2str(LambdaList(n))]);
-    subplot(1,2,2)
-    histogram(squeeze(LinDia(n,:,:)))
-    title(['Linear Diattenuation Histogram (' num2str(LambdaList(n)) ')']);
-    saveas(gcf,fullfile(['Y:\Measurements\Dichroic_Analysis\Linear_Diattenuation\dichroic-45-small-ROI-' date],['LD_Lambda_' num2str(LambdaList(n)) '_' date '.png']));
-    close all;
-end
-%%
-avgLD = mean(LinDia,[2 3]);
-plot(LambdaList,avgLD,'r*-');
-title('Avg Linear Diattenuation over \lambda')
-xlabel('\lambda (nm)')
-ylabel('Linear Diattenuation')
-saveas(gcf,fullfile(['Y:\Measurements\Dichroic_Analysis\Linear_Diattenuation\dichroic-45-small-ROI-' date],['Avg_LinDia_Lambda.png']));
 %% Polarizance
-mkdir(['Y:\Measurements\Dichroic_Analysis\Polarizance\dichroic-45-small-ROI-' date]);
-for n = 1:nLambda
-    %Equation 6.51 page 180 from Russell's book
-    % Pol = sqrt(mmVecs(5,:,:).^2 + mmVecs(9,:,:).^2 + mmVecs(13,:,:).^2)./mmVecs(1,:,:);
-    Pol(n,:,:) = sqrt(M_10(n,:,:).^2 + M_20(n,:,:).^2 + M_30(n,:,:).^2)./M_00(n,:,:);
-    %Plot Polarizance map and histogram
-    subplot(1,2,1)
-    imshow(squeeze(Pol(n,:,:)),[0 1],'colormap',parula);colorbar;
-    title(['2D Polarizance per pixel ' Label num2str(LambdaList(n))]);
-
-    subplot(1,2,2)
-    histogram(squeeze(Pol(n,:,:)))
-%     imhist(squeeze(Pol))
-    title(['Polarizance Histogram (' num2str(LambdaList(n)) ')']);
-    saveas(gcf,fullfile(['Y:\Measurements\Dichroic_Analysis\Polarizance\dichroic-45-small-ROI-' date],['Pol_Lambda_' num2str(LambdaList(n)) '_' date '.png']));
-    close all;
-end
-%%
-avgPol = mean(Pol,[2 3]);
-plot(LambdaList,avgPol,'g*-');
-title('Avg Polarizance over \lambda')
-xlabel('\lambda (nm)')
-ylabel('Polarizance')
-saveas(gcf,fullfile(['Y:\Measurements\Dichroic_Analysis\Polarizance\dichroic-45-small-ROI-' date],['Avg_Pol_Lambda.png']));
+Polarizance(mmVecs, LambdaList, nLambda, Label)
 %% Retardation Map
 
 tic
@@ -418,42 +263,4 @@ title('\delta_R')
 toc
 
 %% Depolarization Index
-close all;
-mkdir(['Y:\Measurements\Dichroic_Analysis\DepolIndex\dichroic-45-small-ROI-' date]);
-%Sum of squares variable
-M_ij = zeros(nLambda,5,5);
-
-for n = 1:nLambda
-%create sum of squares and calculate DI. Equation 6.79 page 195 from Russell's book
-    for ii = 1:16
-        M_ij(n,:,:) = squeeze(mmVecs(n,ii,:,:)).^2 + squeeze(M_ij(n,:,:));
-    end
-end
-
-for n= 1:nLambda
-    % DepolIndex = sqrt(M_ij-squeeze(mmVecs(1,:,:)).^2)./(sqrt(3)*squeeze(mmVecs(1,:,:)));
-    for ii = 1:16
-        DepolIndex(n,:,:) = sqrt(squeeze(M_ij(n,:,:))-squeeze(M_00(n,:,:)).^2) ./ (sqrt(3)*squeeze(M_00(n,:,:)));
-    end
-    
-    figure(1)
-    %Plot DI map
-    subplot(1,2,1)
-    imshow(squeeze(DepolIndex(n,:,:)),[0 1],'colormap',parula);colorbar;
-    title(['2D Depolarization Index per pixel ' Label num2str(LambdaList(n))]);
-
-    subplot(1,2,2)
-    histogram(squeeze(DepolIndex(n,:,:)))
-    title(['Depolarization Index Histogram (' num2str(LambdaList(n)) ')']);
-    saveas(gcf,fullfile(['Y:\Measurements\Dichroic_Analysis\DepolIndex\dichroic-45-small-ROI-' date],['DI_Lambda_' num2str(LambdaList(n)) '_' date '.png']));
-    close all;
-end
-
-%%
-avgDI = mean(DepolIndex,[2 3]);
-plot(LambdaList,avgDI,'m*-');
-title('Depolarization Index over \lambda')
-xlabel('\lambda (nm)')
-ylabel('Depol. Index')
-saveas(gcf,fullfile(['Y:\Measurements\Dichroic_Analysis\DepolIndex\dichroic-45-small-ROI-' date],'Avg_DI_Lambda.png'));
-
+DepolIndex(mmVecs, LambdaList, nLambda, Label)
