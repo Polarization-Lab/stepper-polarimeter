@@ -38,15 +38,15 @@ NI_shutter(0)%close shutter
 pause(1)
 
 start(vid)
-prepare_DMM(COMdmm,exposure)
+%prepare_DMM(COMdmm,exposure)
 pause(.2)
 dark_im = getdata(vid);
-trigger_DMM(COMdmm)
+%trigger_DMM(COMdmm)
 stop(vid)
 NI_shutter(1) %open_shutter
 
 pause(exposure)
-dmmdata = read_DMM(COMdmm,exposure); %read DMM data from buffer
+dmmdata = 1 ; %read_DMM(COMdmm,exposure); %read DMM data from buffer
 
 
 %write dark image to h5
@@ -76,15 +76,15 @@ while i < num_meas +1
     meas_name = strcat(wavename,'meas',num2str(i),'/'); 
         
     start(vid)
-    prepare_DMM(COMdmm,exposure);
+    %prepare_DMM(COMdmm,exposure);
     
     %get image data
     imdata = getdata(vid);
-    trigger_DMM(COMdmm);
+    %trigger_DMM(COMdmm);
         
     %take images
     pause(exposure)
-    dmmdata =read_DMM(COMdmm,exposure);
+    dmmdata = 1; %read_DMM(COMdmm,exposure);
         
         
        
