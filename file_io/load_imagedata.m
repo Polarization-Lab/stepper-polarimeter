@@ -31,11 +31,22 @@ else
     disp('this wavelength is not in the .h5 file')
 end
 
+%ROI
+start = [xstart,ystart,1,1];
+count = [xcount,ycount,1,fm];
+
+%import dark field image
+dark_imgs = h5read(fn,strcat(group_name,'/darkdata'),start,count);
+dark_img = dark_imgs(:,:,1); 
+    for j = 2:fm
+        dark_img = dark_img + dark_imgs(:,:,j);
+    end
+    dark_img = dark_img./fm;
+
 
 %allocate space 
 image_data = zeros(xcount,ycount,meas_num);
-start = [xstart,ystart,1,1];
-count = [xcount,ycount,1,fm];
+
 
 for i = 1:meas_num
     group_name   = strcat('/images/wave',num2str(wavelength),'/meas',num2str(i));
@@ -50,7 +61,7 @@ for i = 1:meas_num
     mean_img = mean_img./fm;
     
     %load in pre allocated array
-    image_data(:,:,i) = mean_img ;
+    image_data(:,:,i) = mean_img - dark_img ;
     
     clear images;clear mean_img
 end

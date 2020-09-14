@@ -6,6 +6,12 @@ function [ref_mean,ref_std] = load_refdata(fn,wavelength,meas_num)
 %   wavelength is the wavelength in nm
 %   meas_num is the number of measurements in the file
 
+
+%import dark field image
+group_name = strcat('/images/wave',num2str(wavelength));
+dark_ref = h5read(fn,strcat(group_name,'/darkref'));
+dark_ref = mean(dark_ref);
+
 %allocate space 
 ref_mean = zeros(meas_num,1);
 ref_std = zeros(meas_num,1);
@@ -14,7 +20,7 @@ for i = 1:meas_num
     group_name   = strcat('/images/wave',num2str(wavelength),'/meas',num2str(i));
     ref          = h5read(fn,strcat(group_name,'/refdata'));
     
-    ref_mean(i)         = mean(ref);
+    ref_mean(i)         = mean(ref) - dark_ref;
     ref_std(i)          = std(ref);
 end
 
