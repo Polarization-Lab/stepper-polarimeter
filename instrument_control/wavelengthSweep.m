@@ -1,4 +1,4 @@
-function [] = wavelengthSweep(fn,wavelength, exposure , vid, num_meas, COMmono,COMdmm, xps, framesPerTrigger)
+function [] = wavelengthSweep(fn,wavelength, exposure , vid, num_meas, COMmono, xps, framesPerTrigger)
 %WAVELENGTHSWEEP Summary of this function goes here
 %   fn  filename string path to .h5 fil.e
 %   WAVELENGTH double wavelength of exposure [nm]
@@ -29,24 +29,16 @@ start(vid)
 im = getdata(vid);
 imdim = size(im);
 
-
 %create wavelength fp
 wavename = strcat('/images/wave',num2str(wavelength),'/'); %name for this wavelength group
 
 %take darkfield image
-NI_shutter(0)%close shutter
+NI_shutter_Jake(0)%close shutter
 pause(1)
-
-start(vid)
-%prepare_DMM(COMdmm,exposure)
-pause(.2)
-dark_im = getdata(vid);
-%trigger_DMM(COMdmm)
-stop(vid)
-NI_shutter(1) %open_shutter
+[dark_im, dark_ref] = take_snapshot(vid, exposure , framesPerTrigger);
+NI_shutter_Jake(1) %open_shutter
 
 pause(exposure)
-dmmdata = 1 ; %read_DMM(COMdmm,exposure); %read DMM data from buffer
 
 
 %write dark image to h5
@@ -54,12 +46,10 @@ imname = strcat('/images/wave',num2str(wavelength),'/darkdata');
 dmmname= strcat('/images/wave',num2str(wavelength),'/darkref');
 
 h5create(fn,imname,size(dark_im))%create image dataset
-h5create(fn,dmmname,size(dmmdata))%create image dataset
+h5create(fn,dmmname,size(dark_ref))%create image dataset
 
 h5write(fn,imname,dark_im);
-h5write(fn,dmmname, dmmdata);
-
-
+h5write(fn,dmmname, dark_ref);
 
 %set up measurement for number of PSG/PSA measurements
 i=1;
@@ -73,36 +63,24 @@ while i < num_meas +1
     movePSA(xps,a) %MOVE PSA
     
     %define image group name
-    meas_name = strcat(wavename,'meas',num2str(i),'/'); 
-        
-    start(vid)
-    %prepare_DMM(COMdmm,exposure);
+    meas_name = strcat(wavename,'meas',num2str(i),'/');     
     
-    %get image data
-    imdata = getdata(vid);
-    %trigger_DMM(COMdmm);
-        
     %take images
-    pause(exposure)
-    dmmdata = 1; %read_DMM(COMdmm,exposure);
-        
-        
-       
-        
+    [im, ref] = take_snapshot(vid, exposure , framesPerTrigger);
+           
     %write to h5
     imname = strcat(meas_name,'imagedata');
     dmmname= strcat(meas_name,'refdata');
 
-    h5create(fn,imname,size(imdata))%create image dataset
-    h5create(fn,dmmname,size(dmmdata))%create image dataset
+    h5create(fn,imname,size(im))%create image dataset
+    h5create(fn,dmmname,size(ref))%create image dataset
 
-    h5write(fn,imname,imdata);
-    h5write(fn,dmmname, dmmdata);
+    h5write(fn,imname,im);
+    h5write(fn,dmmname,ref);
 
-    clear imdata
-    clear dmmdata
-
-    stop(vid)
+    clear im
+    clear ref
+    
     i=i+1;
 end
 

@@ -1,21 +1,25 @@
 function [] = NI_shutter(position)
 %NI_SHUTTER this function will open and close the external shutter
 %   Note this only works in R2020 and beyond
+%   Until Hamamatsu driver works in R2020, this will need to be executed
+%   externally to the general imaging chain
 %   position - bool, if true shutter opens, close if F
 
 %create a DataAquisition and Add Analog input channels 
-dq = daq("ni");
-addoutput(dq,"Dev2","port1/line0:3","Digital")
+s = daq.createSession('ni');
+addDigitalChannel(s,'dev2','Port1/Line0:3','OutputOnly');
+
 
 % Write values to output channels (turns on, waits for a return, turns off)
 if position
-    output = ones(1, 4);
-else
-    output = zeros(1, 4);
+    output = [1 1 1 1];
+else 
+    output = [0 0 0 0];
 end
 
-write(dq, output)
-pause(.5)
+outputSingleScan(s, output)
+pause(5)
+release(s)
 
 end
 

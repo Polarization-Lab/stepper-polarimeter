@@ -5,8 +5,9 @@ function [dq,ch] = initializeRef()
 dq = daq("ni");
 ch = addinput(dq,"Dev2", "ai0","Voltage");
 
-dq.Rate = 100;
 
+ch0 = addoutput(dq,"Dev2","port1/line0:3","Digital");
+ch1 = addinput(dq,"Dev2","port0/line0:3","Digital");
 
 end
 

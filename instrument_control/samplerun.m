@@ -1,12 +1,12 @@
 %create HDF5 dataset
 
 %writefilepath
-fp = 'D:\Measurements\Dichroic_Analysis\';
+fp = 'D:\Measurements\'; %change
 date = date();
 starttime = datestr(now);
 
-usernotes = 'taken by khart ; dichroic at 0 degrees,matches exposures and wacelenths from air measurement taken sept 1 ';
-fn = 'dichroic-0';
+usernotes = 'taken by jheath ; Example 10/28/2020'; %change
+fn = 'TourExample2'; %change
 name = strcat(fp,fn,'-',date,'.h5');
 
 num_meas = 64;
@@ -17,7 +17,7 @@ for i = 1:31
     exposure = exposures(i);
     framesPerTrigger = 3;
     homeMotor(xps)
-    wavelengthSweep(name,wavelength,exposure ,vid,num_meas, COMmono,COMdmm, xps, framesPerTrigger)    
+    wavelengthSweep(name,wavelength,exposure ,vid,num_meas, COMmono, xps, framesPerTrigger)    
 end
 
 endtime = datestr(now);
