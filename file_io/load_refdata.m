@@ -1,4 +1,4 @@
-function [ref_mean,ref_std] = load_refdata(fn,wavelength,meas_num)
+function [ref_mean,ref_std,refVecs] = load_refdata(fn,wavelength,meas_num)
 %LOAD_IMAGEDATA this function loads image data from the hdf5 file for a
 %single wavelength. Will average over apporipriate number of frames and
 %display associated metadata
@@ -17,6 +17,7 @@ for i = 1:meas_num
     ref_mean(i)         = mean(ref);
     ref_std(i)          = std(ref);
 end
+refVecs = ref_mean/ref_mean(1);
 
 end
 

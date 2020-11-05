@@ -20,9 +20,9 @@ for n = 1:nLambda
 end
 
 close all;
-% mkdir(['Y:\Measurements\Dichroic_Analysis\DepolIndex\dichroic-45-small-ROI-' date]);
+mkdir(['d:\Measurements\Dichroic_Analysis\DepolIndex\dichroic-45-small-ROI-' date]);
 %Sum of squares variable
-M_ij = zeros(nLambda,5,5);
+M_ij = zeros(nLambda,10,10);
 
 for n = 1:nLambda
 %create sum of squares and calculate DI. Equation 6.79 page 195 from Russell's book
@@ -46,7 +46,7 @@ for n= 1:nLambda
     subplot(1,2,2)
     histogram(squeeze(DepolIndex(n,:,:)))
     title(['Depolarization Index Histogram (' num2str(LambdaList(n)) ')']);
-%     saveas(gcf,fullfile(['Y:\Measurements\Dichroic_Analysis\DepolIndex\dichroic-45-small-ROI-' date],['DI_Lambda_' num2str(LambdaList(n)) '_' date '.png']));
+    saveas(gcf,fullfile(['d:\Measurements\Dichroic_Analysis\DepolIndex\dichroic-45-small-ROI-' date],['DI_Lambda_' num2str(LambdaList(n)) '_' date '.png']));
     close all;
 end
 
@@ -55,5 +55,5 @@ plot(LambdaList,avgDI,'m*-');
 title('Depolarization Index over \lambda')
 xlabel('\lambda (nm)')
 ylabel('Depol. Index')
-% saveas(gcf,fullfile(['Y:\Measurements\Dichroic_Analysis\DepolIndex\dichroic-45-small-ROI-' date],'Avg_DI_Lambda.png'));
+saveas(gcf,fullfile(['d:\Measurements\Dichroic_Analysis\DepolIndex\dichroic-45-small-ROI-' date],'Avg_DI_Lambda.png'));
 

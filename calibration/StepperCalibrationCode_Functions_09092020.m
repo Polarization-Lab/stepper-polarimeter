@@ -7,33 +7,38 @@
 tic
 clear all; close all;clc;
 nSteps = 64; %StepperCal = 64, RGB950 = 40
-LambdaList = linspace(450,740,30);
+LambdaList = linspace(450,750,31);
 nLambda = length(LambdaList);
 
 %image size. Needs to be more robust.
 testimsz_1 = 1500;
 testimsz_2 = 1500;
-ROI = 5;
+ROIx = 10;
+ROIy = 10;
 
 %Calibration file path
-calibrationFilePath = 'Y:\Measurements\Dichroic_Analysis\air-01-Sep-2020.h5';
-testFilePath = '\\765-polarizer.optics.arizona.edu\stepper\Stepper Polarimeter\Stepper Software Rebuild\TestData\Dichroic_Analysis\dichroic-45-07-Sep-2020.h5';
+% calibrationFilePath = 'Y:\Measurements\Dichroic_Analysis\air-01-Sep-2020.h5';
+% testFilePath = '\\765-polarizer.optics.arizona.edu\stepper\Stepper Polarimeter\Stepper Software Rebuild\TestData\Dichroic_Analysis\dichroic-45-07-Sep-2020.h5';
+calibrationFilePath = 'D:\Measurements\Air_Calibrations\AirCal-20-Oct-2020.h5';
+testFilePath = 'D:\Measurements\Dichroic_Analysis\Dichroic0-21-Oct-2020.h5';
+%% Load Calibration data
 
 for ii = 1:length(LambdaList) %for loading all lambda(s)
 %Get h5 reference data
     Lambda = LambdaList(ii);
-    refVecs(ii,:) = NormalizedReferenceData(calibrationFilePath,Lambda,nSteps);
+    [~,~,refVecs(ii,:)] = load_refdata(calibrationFilePath,Lambda,nSteps);
 
 %Grab measured data from h5 file
-    meandata(ii,:,:,:) = ReadCalImages(calibrationFilePath,Lambda,refVecs,nSteps); %needs to use dark field correction code at some point
+     temp(ii,:,:,:) = ReadCalImages(calibrationFilePath,Lambda,refVecs(ii,:),nSteps);
+%     meandatanoref(ii,:,:,:) = ReadDataImagesNoRef(calibrationFilePath,Lambda,nSteps);
+% meandata(ii,:,:,:) = load_imagedata(calibrationFilePath,Lambda,nSteps,testimsz_1/2 - 5,testimsz_2/2-5,ROIx,ROIy,refVecs); %needs to use dark field correction code at some point
 
 end
+%%
+clc;
 
 %Find the max
 mx = max(meandata,[],'all');
-
-%%
-clc;
 %Get amount of pixels
 PixelCount = length(meandata(1,1,:));
 
@@ -52,7 +57,7 @@ func = @(fitvals, inpvals) AirCalRoutine_MKeditLSQ(fitvals(1:PixelCount*nLambda)
 % lb = [Amp ];
 % ub = [3*mx*ones(1,PixelCount) pi*ones(1,PixelCount) pi*ones(1,PixelCount)];
 lb = [mx*zeros(1,PixelCount*nLambda) -pi*ones(1,nLambda) -pi/2 -pi*ones(1,nLambda) -pi/2 -pi/2];
-ub = [3*mx*ones(1,PixelCount*nLambda) pi*ones(1,nLambda) pi/2 pi*ones(1,nLambda) pi/2 pi/2];
+ub = [4*mx*ones(1,PixelCount*nLambda) pi*ones(1,nLambda) pi/2 pi*ones(1,nLambda) pi/2 pi/2];
 
 
 %Input vector
@@ -63,8 +68,15 @@ ub = [3*mx*ones(1,PixelCount*nLambda) pi*ones(1,nLambda) pi/2 pi*ones(1,nLambda)
 fitguess = [2*mx*ones([1,PixelCount*nLambda]), 2*pi/3*ones(1,nLambda), 0, 2*pi/3*ones(1,nLambda), 0, 0];
 %%
 %Least squares curve fitting and storing into caldata
+
 [fits,resnorm,res] = lsqcurvefit(func, fitguess, nSteps, meandata,lb,ub);
 caldata(:)=fits(:);
+
+f = msgbox('Operation Completed');
+
+load handel
+sound(y,Fs)
+
 %%
 %RMSE of data
 for ii = 1:nLambda
@@ -72,6 +84,7 @@ RMSE_var(ii) = std(res(ii,:)); %will need to fix size (1 x nLambda)
 end
 %Grab caldata for tables, plotting, and psgMM/psaMM
 %Create table in radians
+%%
 Amp = caldata(1:PixelCount*nLambda);
 dg_rad = caldata(PixelCount*nLambda+1:PixelCount*nLambda+nLambda); %change range
 DelRad_g = caldata(PixelCount*nLambda+1+nLambda);
@@ -87,23 +100,28 @@ LP_Rad = caldata(PixelCount*nLambda+3+2*nLambda);
 ThetaMotorGen = (0:nSteps-1)*2*pi/nSteps; 
 %%
 figure(1)
-plot(LambdaList,dg_rad)
+plot(LambdaList,dg_rad,'*b')
+xlabel('\lambda (nm)')
 title('\delta_{g} radians');
 figure(2)
-plot(LambdaList,da_rad)
+plot(LambdaList,da_rad,'*b')
 title('\delta_{a} radians');
+xlabel('\lambda (nm)')
+%%
 figure(3)
 errorbar(LambdaList,RMSE_var);
 title('RMSE vs Lambda');
+xlabel('\lambda (nm)')
 %%
+close all;
 %Plot Data
 hold on;
-plot(ThetaMotorGen,mean(squeeze(meandata(13,:,:,:)),[2,3]),'*r'); 
+plot(ThetaMotorGen,mean(squeeze(meandata(20,:,:,:)),[2,3]),'*r'); 
 Irrad = AirCalRoutine_MKeditLSQ(Amp,dg_rad,DelRad_g,da_rad,DelRad_a,LP_Rad, 629);
 
 %Plot fit
-plot(0:0.01:2*pi,mean(squeeze(Irrad(13,:,:,:)),[2,3]));%,'color',cRGB);
-title(['Lambda =  ' num2str(LambdaList(13))]);
+plot(0:0.01:2*pi,mean(squeeze(Irrad(20,:,:,:)),[2,3]));%,'color',cRGB);
+title(['Lambda =  ' num2str(LambdaList(20))]);
 xlabel('PSG Rotation (Radians)')
 ylabel('Camera Counts')
 
@@ -139,33 +157,38 @@ tic
 [~,W] = AirCalRoutine_MKedit2(Amp,dg_rad,DelRad_g,da_rad,DelRad_a,LP_Rad,nSteps);
 toc
 %% Generate Mueller Matrices
-Lambda = 450;
-
-
-refVecsImgs = NormalizedReferenceData(testFilePath, Lambda, nSteps);
-% [imgdata, ROIimg] = ReadDataImages(testFilePath, Lambda,refVecsImgs,nSteps);
-[imgdata, ROIimg] = ReadDataImagesNoRef(testFilePath, Lambda,nSteps);
+for ii = 1:length(LambdaList) %for loading all lambda(s)
+%Get h5 reference data
+    Lambda = LambdaList(ii);
+    [~,~,refVecsImgs(ii,:)] = load_refdata(testFilePath,Lambda,nSteps);
+    [~, ROIimg(ii,:,:,:)] = ReadDataImages(testFilePath, Lambda,refVecsImgs(ii,:),nSteps);
+%     imgdata(ii,:,:,:) = ReadDataImagesNoRef(testFilePath, Lambda,nSteps);
 % save('dichroic_575_45','imgdata','ROIimg');
-f = msgbox('Operation Completed');
+end
 %%
+f = msgbox('Operation Completed');
+
 load handel
 sound(y,Fs)
 %%
-temp = reshape(Amp(:),30,5,5);
+ampcaldata = reshape(Amp(:),31,10,10);
 
 %%
 
 tic
 % nLambda=length(Lambda);
-M = zeros(nLambda,16,1500*1500);
+M = zeros(nLambda,16,10*10);
 for n = 1:nLambda
     Winv = pinv(squeeze(W(n,:,:)));
-    M(n,:,:) = Winv*(reshape(imgdata(:,:,:),nSteps,1500*1500)./repmat(Amp(:)',[nSteps 1]));
+    M(n,:,:) = Winv*(reshape(squeeze(ROIimg(n,:,:,:)),nSteps,ROIx*ROIy)./repmat(ampcaldata(n,:),[nSteps 1]));
 end
 
 toc
 %% .h5 ROI image1
-mmVecs = CreateMuellerMatrix(Amp,W,nLambda,ROI,ROIimg,nSteps);
+mmVecs = CreateMuellerMatrix(Amp,W,nLambda,10,ROIimg,nSteps);
+%%
+fn = strcat("Dichroic0_mmVecs_", date);
+save(fn,"mmVecs");
 %% Normalize MM
 for ii = 1:16
     NormMMVecs(ii,:,:) = squeeze(mmVecs(ii,:,:))./squeeze(mmVecs(1,:,:));
@@ -175,7 +198,9 @@ end
 AvgMMTable(mmVecs,450,LambdaList)
 
 %% Display image MMs
-DisplayMM(mmVecs,nLambda,LambdaList)
+
+filename = 'Dichroic0_10262020';
+DisplayMM(mmVecs,nLambda,LambdaList,filename)
 
 
 %% Display Normalized MM
@@ -184,12 +209,12 @@ DisplayNormMM(mmVecs,LambdaList,nLambda)
 %% MM transmission curves 
 
 TransmissionMMPlot(LambdaList,mmVecs)
+
 %% M_xy setup for easier calculations
-Label = ['Dichroic 45' char(176)];
+Label = ['Dichroic 0' char(176)];
 
 for n = 1:nLambda
-    Label = ['Dichroic 45' char(176)];
-    WL = num2str(Lambda);
+    Label = ['Dichroic 0' char(176)];
 
     M_00(n,:,:)= squeeze(mmVecs(n,1,:,:));
     M_01(n,:,:)= squeeze(mmVecs(n,2,:,:));
@@ -264,3 +289,6 @@ toc
 
 %% Depolarization Index
 DepolIndex(mmVecs, LambdaList, nLambda, Label)
+
+%% Mueller to Jones
+M2J(mmVecs)

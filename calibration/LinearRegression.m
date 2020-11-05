@@ -1,6 +1,6 @@
-data = zeros(30,2);
+data = zeros(31,2);
 data(:,1) = LambdaList'; 
-data(:,2) = dg_deg';
+data(:,2) = da_rad';
 x1=data(:,1);
 y=data(:,2); 
 X = [ones(size(x1)) x1];
@@ -21,16 +21,15 @@ patch([xval fliplr(xval)], [ylow fliplr(yupp)], 'k','EdgeColor','white')
 alpha(0.3)
 leg=legend('Observed values','Regression line','95% C.I');
 set(leg,'location','best')
-title('\delta_{PSG} vs \lambda')
+title('\delta_{PSA} vs \lambda')
 xlabel('\lambda (nm)', 'FontSize', fontSize);
-ylabel('\delta_{PSG}', 'FontSize', fontSize);
+ylabel('\delta_{PSA}', 'FontSize', fontSize);
 set(gcf,'color','white')
 bias=sum(y-x1)/length(y);
 tbl = table(y , x1)
 mdl = fitlm(tbl,'linear')
-str=[    'N = ',sprintf('%d',mdl.NumObservations),...
-', Bias = ',sprintf('%.3f',bias),...    
-' m^3/m^3, R^2 = ',sprintf('%.2f',mdl.Rsquared.Ordinary),...
+str=[    'N = ',sprintf('%d',mdl.NumObservations),... 
+', R^2 = ',sprintf('%.2f',mdl.Rsquared.Ordinary),...
 %'y = ',sprintf('%.2f',table2array(mdl.Coefficients(2,1))),'x + ',sprintf('%.2f',table2array(mdl.Coefficients(1,1)))
 ]
 annotation('textbox',[.15 0.9 0 0],'string',str,'FitBoxToText','on','EdgeColor','black')     

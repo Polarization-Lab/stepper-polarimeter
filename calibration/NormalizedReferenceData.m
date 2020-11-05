@@ -4,7 +4,7 @@ function refVecs = NormalizedReferenceData(filepath, wavelength, nSteps)
 %this script reads in and plots the reference detector data
 
 
-fn      = extractAfter(filepath,"Dichroic_Analysis\");
+fn      = extractAfter(filepath,"Air_Calibrations\");
 wv      = wavelength;
 
 m       = zeros(1,64);

@@ -1,9 +1,9 @@
-function AvgMMTable(mmVecs,Lambda,LambdaList)
+function TotalMM2 = AvgMMTable(mmVecs,Lambda,LambdaList)
 %Only works with single lambda for now
 %% Create averaged scalar MM (Table form)
 tic
 n = find(LambdaList == Lambda);
-
+clear avgMM TotalMM
 for p = 1:16
     avgMM(p) = mean(squeeze(mmVecs(n,p,:)))/mean(squeeze(mmVecs(n,1,:)),'all');
 end

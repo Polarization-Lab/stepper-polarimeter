@@ -21,7 +21,7 @@ end
 
 M_00(M_00 == 0) = NaN;
 
-% mkdir(['Y:\Measurements\Dichroic_Analysis\Linear_Diattenuation\dichroic-45-small-ROI-' date]);
+mkdir(['d:\Measurements\Dichroic_Analysis\Linear_Diattenuation\dichroic-45-small-ROI-' date]);
 
 for n = 1:nLambda
     %Equation 6.49 page 179 from Russell's book
@@ -34,7 +34,7 @@ for n = 1:nLambda
     subplot(1,2,2)
     histogram(squeeze(LinDia(n,:,:)))
     title(['Linear Diattenuation Histogram (' num2str(LambdaList(n)) ')']);
-%     saveas(gcf,fullfile(['Y:\Measurements\Dichroic_Analysis\Linear_Diattenuation\dichroic-45-small-ROI-' date],['LD_Lambda_' num2str(LambdaList(n)) '_' date '.png']));
+    saveas(gcf,fullfile(['d:\Measurements\Dichroic_Analysis\Linear_Diattenuation\dichroic-45-small-ROI-' date],['LD_Lambda_' num2str(LambdaList(n)) '_' date '.png']));
     close all;
 end
 
@@ -43,4 +43,4 @@ plot(LambdaList,avgLD,'r*-');
 title('Avg Linear Diattenuation over \lambda')
 xlabel('\lambda (nm)')
 ylabel('Linear Diattenuation')
-% saveas(gcf,fullfile(['Y:\Measurements\Dichroic_Analysis\Linear_Diattenuation\dichroic-45-small-ROI-' date],['Avg_LinDia_Lambda.png']));
+saveas(gcf,fullfile(['d:\Measurements\Dichroic_Analysis\Linear_Diattenuation\dichroic-45-small-ROI-' date],['Avg_LinDia_Lambda.png']));

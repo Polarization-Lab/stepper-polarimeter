@@ -19,7 +19,7 @@ for n = 1:nLambda
     M_33(n,:,:)= squeeze(mmVecs(n,16,:,:));
 end
 
-% mkdir(['Y:\Measurements\Dichroic_Analysis\Polarizance\dichroic-45-small-ROI-' date]);
+mkdir(['d:\Measurements\Dichroic_Analysis\Polarizance\dichroic-45-small-ROI-' date]);
 for n = 1:nLambda
     %Equation 6.51 page 180 from Russell's book
     % Pol = sqrt(mmVecs(5,:,:).^2 + mmVecs(9,:,:).^2 + mmVecs(13,:,:).^2)./mmVecs(1,:,:);
@@ -33,7 +33,7 @@ for n = 1:nLambda
     histogram(squeeze(Pol(n,:,:)))
 %     imhist(squeeze(Pol))
     title(['Polarizance Histogram (' num2str(LambdaList(n)) ')']);
-%     saveas(gcf,fullfile(['Y:\Measurements\Dichroic_Analysis\Polarizance\dichroic-45-small-ROI-' date],['Pol_Lambda_' num2str(LambdaList(n)) '_' date '.png']));
+    saveas(gcf,fullfile(['d:\Measurements\Dichroic_Analysis\Polarizance\dichroic-45-small-ROI-' date],['Pol_Lambda_' num2str(LambdaList(n)) '_' date '.png']));
     close all;
 end
 %%
@@ -42,4 +42,4 @@ plot(LambdaList,avgPol,'g*-');
 title('Avg Polarizance over \lambda')
 xlabel('\lambda (nm)')
 ylabel('Polarizance')
-saveas(gcf,fullfile(['Y:\Measurements\Dichroic_Analysis\Polarizance\dichroic-45-small-ROI-' date],['Avg_Pol_Lambda.png']));
+saveas(gcf,fullfile(['d:\Measurements\Dichroic_Analysis\Polarizance\dichroic-45-small-ROI-' date],['Avg_Pol_Lambda.png']));

@@ -22,7 +22,7 @@ end
 M_00(M_00 == 0) = NaN;
 
 close all;
-% mkdir(['Y:\Measurements\Dichroic_Analysis\Diattenuation\dichroic-45-small-ROI-' date]);
+mkdir(['d:\Measurements\Dichroic_Analysis\Diattenuation\dichroic-45-small-ROI-' date]);
 
 for n = 1:nLambda
     %Equation 6.41 page 177 from Russell's book
@@ -36,7 +36,7 @@ for n = 1:nLambda
     subplot(1,2,2)
     histogram(squeeze(Dia(n,:,:)))
     title(['Diattenuation Histogram (' num2str(LambdaList(n)) ')']);
-%     saveas(gcf,fullfile(['Y:\Measurements\Dichroic_Analysis\Diattenuation\dichroic-45-small-ROI-' date],['Lambda ' num2str(LambdaList(n)) '_' date '.png']));
+    saveas(gcf,fullfile(['d:\Measurements\Dichroic_Analysis\Diattenuation\dichroic-45-small-ROI-' date],['Lambda ' num2str(LambdaList(n)) '_' date '.png']));
     close all;
 end
 
@@ -45,4 +45,4 @@ plot(LambdaList,avgDia,'b*-');
 title('Avg Diattenuation over \lambda')
 xlabel('\lambda (nm)')
 ylabel('Diattenuation')
-saveas(gcf,fullfile(['Y:\Measurements\Dichroic_Analysis\Diattenuation\dichroic-45-small-ROI-' date],['Avg_Dia_Lambda.png']));
+saveas(gcf,fullfile(['d:\Measurements\Dichroic_Analysis\Diattenuation\dichroic-45-small-ROI-' date],['Avg_Dia_Lambda.png']));

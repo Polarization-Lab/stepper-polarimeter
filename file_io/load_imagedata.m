@@ -1,4 +1,4 @@
-function [image_data] = load_imagedata(fn,wavelength,meas_num,xstart,xcount,ystart,ycount)
+function [image_data] = load_imagedata(fn,wavelength,meas_num,xstart,xcount,ystart,ycount,ref)
 %LOAD_IMAGEDATA this function loads image data from the hdf5 file for a
 %single wavelength. Will average over apporipriate number of frames and
 %display associated metadata
@@ -22,7 +22,7 @@ if ismember(group_name,groups_names)
     disp('the exposure time is [sec]:')
     disp(exp)
     
-    %fames taken 
+    %frames taken 
     fm=h5readatt(fn,group_name,'frames_per_trigger');
     disp('frames per measurement:')
     disp(fm)
@@ -39,7 +39,7 @@ count = [xcount,ycount,1,fm];
 
 for i = 1:meas_num
     group_name   = strcat('/images/wave',num2str(wavelength),'/meas',num2str(i));
-    images = h5read(fn,strcat(group_name,'/imagedata'),start,count);
+    images = h5read(fn,strcat(group_name,'/imagedata'),start,count)/mean(ref);
 
     
     %take average of frames
@@ -50,7 +50,7 @@ for i = 1:meas_num
     mean_img = mean_img./fm;
     
     %load in pre allocated array
-    image_data(:,:,i) = mean_img ;
+    image_data(:,:,i) = mean_img;
     
     clear images;clear mean_img
 end
