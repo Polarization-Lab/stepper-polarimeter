@@ -1,4 +1,4 @@
-function [image_data] = load_imagedata(fn,wavelength,meas_num,xstart,xcount,ystart,ycount,ref)
+function [image_data] = load_imagedata(fn,wavelength,meas_num,xstart,xcount,ystart,ycount)
 %LOAD_IMAGEDATA this function loads image data from the hdf5 file for a
 %single wavelength. Will average over apporipriate number of frames and
 %display associated metadata
@@ -22,7 +22,7 @@ if ismember(group_name,groups_names)
     disp('the exposure time is [sec]:')
     disp(exp)
     
-    %frames taken 
+    %fames taken 
     fm=h5readatt(fn,group_name,'frames_per_trigger');
     disp('frames per measurement:')
     disp(fm)
@@ -31,15 +31,26 @@ else
     disp('this wavelength is not in the .h5 file')
 end
 
-
-%allocate space 
-image_data = zeros(xcount,ycount,meas_num);
+%ROI
 start = [xstart,ystart,1,1];
 count = [xcount,ycount,1,fm];
 
+%import dark field image
+dark_imgs = h5read(fn,strcat(group_name,'/darkdata'),start,count);
+dark_img = dark_imgs(:,:,1); 
+    for j = 2:fm
+        dark_img = dark_img + dark_imgs(:,:,j);
+    end
+    dark_img = dark_img./fm;
+
+
+%allocate space 
+image_data = zeros(xcount,ycount,meas_num);
+
+
 for i = 1:meas_num
     group_name   = strcat('/images/wave',num2str(wavelength),'/meas',num2str(i));
-    images = h5read(fn,strcat(group_name,'/imagedata'),start,count)/mean(ref);
+    images = h5read(fn,strcat(group_name,'/imagedata'),start,count);
 
     
     %take average of frames
@@ -50,7 +61,7 @@ for i = 1:meas_num
     mean_img = mean_img./fm;
     
     %load in pre allocated array
-    image_data(:,:,i) = mean_img;
+    image_data(:,:,i) = mean_img - dark_img ;
     
     clear images;clear mean_img
 end
