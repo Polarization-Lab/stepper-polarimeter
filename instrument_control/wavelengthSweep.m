@@ -34,12 +34,11 @@ wavename = strcat('/images/wave',num2str(wavelength),'/'); %name for this wavele
 
 %take darkfield image
 NI_shutter_Jake(0)%close shutter
-pause(1)
+pause(2)
 [dark_im, dark_ref] = take_snapshot(vid, exposure , framesPerTrigger);
 NI_shutter_Jake(1) %open_shutter
 
 pause(exposure)
-
 
 %write dark image to h5
 imname = strcat('/images/wave',num2str(wavelength),'/darkdata');

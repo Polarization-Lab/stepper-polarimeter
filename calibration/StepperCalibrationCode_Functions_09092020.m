@@ -6,6 +6,8 @@
 %Clear variables
 tic
 clear all; close all;clc;
+
+%%
 nSteps = 64; %StepperCal = 64, RGB950 = 40
 LambdaList = linspace(450,750,31);
 nLambda = length(LambdaList);
@@ -17,10 +19,8 @@ ROIx = 10;
 ROIy = 10;
 
 %Calibration file path
-% calibrationFilePath = 'Y:\Measurements\Dichroic_Analysis\air-01-Sep-2020.h5';
-% testFilePath = '\\765-polarizer.optics.arizona.edu\stepper\Stepper Polarimeter\Stepper Software Rebuild\TestData\Dichroic_Analysis\dichroic-45-07-Sep-2020.h5';
-calibrationFilePath = 'D:\Measurements\Air_Calibrations\AirCal-20-Oct-2020.h5';
-testFilePath = 'D:\Measurements\Dichroic_Analysis\Dichroic0-21-Oct-2020.h5';
+calibrationFilePath = 'D:\Measurements\Air_Calibrations\New_Diffuser\AirCalibration-06-Dec-2020.h5';
+testFilePath = 'D:\Measurements\Air_Calibrations\New_Diffuser\Dichroic45-07-Dec-2020.h5';
 %% Load Calibration data
 
 for ii = 1:length(LambdaList) %for loading all lambda(s)
@@ -29,10 +29,8 @@ for ii = 1:length(LambdaList) %for loading all lambda(s)
     [~,~,refVecs(ii,:)] = load_refdata(calibrationFilePath,Lambda,nSteps);
 
 %Grab measured data from h5 file
-     temp(ii,:,:,:) = ReadCalImages(calibrationFilePath,Lambda,refVecs(ii,:),nSteps);
+    meandata(ii,:,:,:) = ReadCalImages(calibrationFilePath,Lambda,refVecs(ii,:),nSteps);
 %     meandatanoref(ii,:,:,:) = ReadDataImagesNoRef(calibrationFilePath,Lambda,nSteps);
-% meandata(ii,:,:,:) = load_imagedata(calibrationFilePath,Lambda,nSteps,testimsz_1/2 - 5,testimsz_2/2-5,ROIx,ROIy,refVecs); %needs to use dark field correction code at some point
-
 end
 %%
 clc;
@@ -42,41 +40,24 @@ mx = max(meandata,[],'all');
 %Get amount of pixels
 PixelCount = length(meandata(1,1,:));
 
-%meandataVecs = reshape(meandata,1,64,10,10);
-
-
-%Get a function for fitting the values
-%Get spectrum data for "lambda colored" plots
-% sRGB = spectrumRGB(Lambda, '1964_FULL');
-% cRGB(:) = [sRGB(:,1) sRGB(:,2) sRGB(:,3)]; %Colors for graphing
-
-%AirCalRoutine_MKedit2(Amp,PSG_delta,PSG_theta,PSA_delta,PSA_theta,PSA_LP,nSteps)
+%AirCalRoutine_MKeditLSQ(Amp,PSG_delta,PSG_theta,PSA_delta,PSA_theta,PSA_LP,nSteps)
 func = @(fitvals, inpvals) AirCalRoutine_MKeditLSQ(fitvals(1:PixelCount*nLambda),fitvals(PixelCount*nLambda+1:PixelCount*nLambda+nLambda),fitvals(PixelCount*nLambda+1+nLambda),fitvals(PixelCount*nLambda+2+nLambda:PixelCount*nLambda+1+2*nLambda),fitvals(PixelCount*nLambda+2+2*nLambda),fitvals(PixelCount*nLambda+3+2*nLambda),inpvals);
 
 %Set bounds and known values, likely not optimal ask Meredith
-% lb = [Amp ];
-% ub = [3*mx*ones(1,PixelCount) pi*ones(1,PixelCount) pi*ones(1,PixelCount)];
 lb = [mx*zeros(1,PixelCount*nLambda) -pi*ones(1,nLambda) -pi/2 -pi*ones(1,nLambda) -pi/2 -pi/2];
 ub = [4*mx*ones(1,PixelCount*nLambda) pi*ones(1,nLambda) pi/2 pi*ones(1,nLambda) pi/2 pi/2];
 
-
-%Input vector
-% inpvec = [PixelCount, nSteps, ThetaMotorGen, ThetaMotorAna];
-
 %Starting fit guess
-% fitguess = [2*mx*ones([1,PixelCount]), 2*pi/3*ones([1,PixelCount]), 2*pi/3*ones([1,PixelCount])];, 2*pi/3, 0, 2*pi/3, 0, 0
 fitguess = [2*mx*ones([1,PixelCount*nLambda]), 2*pi/3*ones(1,nLambda), 0, 2*pi/3*ones(1,nLambda), 0, 0];
 %%
 %Least squares curve fitting and storing into caldata
-
 [fits,resnorm,res] = lsqcurvefit(func, fitguess, nSteps, meandata,lb,ub);
 caldata(:)=fits(:);
 
+%Indicators for code finishing
 f = msgbox('Operation Completed');
-
 load handel
 sound(y,Fs)
-
 %%
 %RMSE of data
 for ii = 1:nLambda
@@ -116,12 +97,12 @@ xlabel('\lambda (nm)')
 close all;
 %Plot Data
 hold on;
-plot(ThetaMotorGen,mean(squeeze(meandata(20,:,:,:)),[2,3]),'*r'); 
+plot(ThetaMotorGen,mean(squeeze(meandata(1,:,:,:)),[2,3]),'*r'); 
 Irrad = AirCalRoutine_MKeditLSQ(Amp,dg_rad,DelRad_g,da_rad,DelRad_a,LP_Rad, 629);
 
 %Plot fit
-plot(0:0.01:2*pi,mean(squeeze(Irrad(20,:,:,:)),[2,3]));%,'color',cRGB);
-title(['Lambda =  ' num2str(LambdaList(20))]);
+plot(0:0.01:2*pi,mean(fliplr(squeeze(Irrad(1,:,:,:))),[2,3]));%,'color',cRGB);
+title(['Lambda =  ' num2str(LambdaList(1))]);
 xlabel('PSG Rotation (Radians)')
 ylabel('Camera Counts')
 
@@ -161,8 +142,8 @@ for ii = 1:length(LambdaList) %for loading all lambda(s)
 %Get h5 reference data
     Lambda = LambdaList(ii);
     [~,~,refVecsImgs(ii,:)] = load_refdata(testFilePath,Lambda,nSteps);
-    [~, ROIimg(ii,:,:,:)] = ReadDataImages(testFilePath, Lambda,refVecsImgs(ii,:),nSteps);
-%     imgdata(ii,:,:,:) = ReadDataImagesNoRef(testFilePath, Lambda,nSteps);
+    [imgdata(ii,:,:,:), ROIimg(ii,:,:,:)] = ReadDataImages(testFilePath, Lambda,refVecsImgs(ii,:),nSteps);
+%     imgdatanoref(ii,:,:,:) = ReadDataImagesNoRef(testFilePath, Lambda,nSteps);
 % save('dichroic_575_45','imgdata','ROIimg');
 end
 %%
