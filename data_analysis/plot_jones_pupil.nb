@@ -1,0 +1,394 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 12.0' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       158,          7]
+NotebookDataLength[     15148,        386]
+NotebookOptionsPosition[     12973,        348]
+NotebookOutlinePosition[     13311,        363]
+CellTagsIndexPosition[     13268,        360]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+
+Cell[CellGroupData[{
+Cell["Plot Jones Pupil", "Title",
+ CellChangeTimes->{{3.815762084726858*^9, 
+  3.815762090361347*^9}},ExpressionUUID->"6990d6ed-3acb-4b34-8a57-\
+4e827cb11198"],
+
+Cell[BoxData[{
+ RowBox[{"Quit", "[", "]"}], "\[IndentingNewLine]", 
+ RowBox[{"ClearAll", "[", "]"}]}], "Input",
+ CellChangeTimes->{{3.815769449034*^9, 3.815769451638591*^9}, {
+  3.816613804647243*^9, 3.816613807234584*^9}},
+ CellLabel->"In[1]:=",ExpressionUUID->"3f62292e-4a61-4638-84bf-937be0203c94"],
+
+Cell[CellGroupData[{
+
+Cell["Import Data", "Chapter",
+ CellChangeTimes->{{3.8157621023400993`*^9, 
+  3.815762104514833*^9}},ExpressionUUID->"49ef00d7-c300-47b7-877e-\
+f0eab8ac51e9"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"abs", "=", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{"Import", "[", 
+        RowBox[{
+        "\"\</Users/kirahart/Dropbox/Research/Stepper/full_jones_670.h5\>\"", 
+         ",", "\"\<abs/jxx\>\""}], "]"}], ",", 
+       RowBox[{"Import", "[", 
+        RowBox[{
+        "\"\</Users/kirahart/Dropbox/Research/Stepper/full_jones_670.h5\>\"", 
+         ",", "\"\<abs/jxy\>\""}], "]"}]}], "}"}], ",", 
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{"Import", "[", 
+        RowBox[{
+        "\"\</Users/kirahart/Dropbox/Research/Stepper/full_jones_670.h5\>\"", 
+         ",", "\"\<abs/jyx\>\""}], "]"}], ",", 
+       RowBox[{"Import", "[", 
+        RowBox[{
+        "\"\</Users/kirahart/Dropbox/Research/Stepper/full_jones_670.h5\>\"", 
+         ",", "\"\<abs/jyy\>\""}], "]"}]}], "}"}]}], "}"}]}], ";"}]], "Input",\
+
+ CellChangeTimes->{{3.8157622884779*^9, 3.815762331681164*^9}, {
+  3.8157655672720137`*^9, 3.815765630099353*^9}, {3.815769276857501*^9, 
+  3.815769287781373*^9}, {3.815775259113456*^9, 3.815775266233389*^9}},
+ CellLabel->"In[1]:=",ExpressionUUID->"30d45625-10f7-4b4e-a2f6-44247ea2322c"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"args", " ", "=", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{"Import", "[", 
+        RowBox[{
+        "\"\</Users/kirahart/Dropbox/Research/Stepper/full_jones_450.h5\>\"", 
+         ",", "\"\<arg/jxx\>\""}], "]"}], ",", 
+       RowBox[{"Import", "[", 
+        RowBox[{
+        "\"\</Users/kirahart/Dropbox/Research/Stepper/full_jones_450.h5\>\"", 
+         ",", "\"\<arg/jxy\>\""}], "]"}]}], "}"}], ",", 
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{"Import", "[", 
+        RowBox[{
+        "\"\</Users/kirahart/Dropbox/Research/Stepper/full_jones_450.h5\>\"", 
+         ",", "\"\<arg/jyx\>\""}], "]"}], ",", 
+       RowBox[{"Import", "[", 
+        RowBox[{
+        "\"\</Users/kirahart/Dropbox/Research/Stepper/full_jones_450.h5\>\"", 
+         ",", "\"\<arg/jyy\>\""}], "]"}]}], "}"}]}], "}"}]}], ";"}]], "Input",\
+
+ CellChangeTimes->{{3.8157623349385443`*^9, 3.81576234112973*^9}, {
+  3.815769298117927*^9, 
+  3.815769348240782*^9}},ExpressionUUID->"8aa8bf7e-8342-4832-91c0-\
+3e800459b27b"],
+
+Cell[BoxData[
+ RowBox[{"ArrayPlot", "[", 
+  RowBox[{"abs", "[", 
+   RowBox[{"[", 
+    RowBox[{"1", ",", "1"}], "]"}], "]"}], "]"}]], "Input",
+ CellChangeTimes->{{3.815762377580784*^9, 3.815762393446413*^9}, {
+  3.815769317657275*^9, 3.81576931781673*^9}, {3.81576942122952*^9, 
+  3.815769428129519*^9}},
+ CellLabel->"In[8]:=",ExpressionUUID->"2a9e031b-0733-4566-a017-0b70b67a1053"]
+}, Open  ]],
+
+Cell["Mask Data", "Chapter",
+ CellChangeTimes->{{3.815762112439641*^9, 
+  3.815762117221592*^9}},ExpressionUUID->"228b88b3-a6b8-4501-8b7f-\
+916c0ad7a30b"],
+
+Cell["Plot Data", "Chapter",
+ CellChangeTimes->{{3.815762145400269*^9, 
+  3.815762146907902*^9}},ExpressionUUID->"733d3a0a-e94e-4176-aec0-\
+1303cc71e474"],
+
+Cell[CellGroupData[{
+
+Cell["Making the plots fancy", "Chapter",
+ CellChangeTimes->{{3.7495633899402733`*^9, 
+  3.749563392970335*^9}},ExpressionUUID->"2ef5f54b-6dbe-4e9a-9044-\
+d3457d99c843"],
+
+Cell["\<\
+You\[CloseCurlyQuote]ll notice that the colorbar on the magnitude plots doesn\
+\[CloseCurlyQuote]t really show off too much variation, especially for the \
+on-diagonals. This is because the dead rays have a Jones matrix of \
+{{0,0},{0,0}}, so the colorbar has to include these zero values even though \
+the actual values are closer to 1 than 0. One way we can circumvent this is \
+to replace all the instances of zero using the replace function. The \
+following lines take the Abs[] and Arg[] of the jonespupil variable, search \
+for every instance of 0. and replaces it with None. Mathematica will plot the \
+background color when it encounters a None when it makes plots.\
+\>", "Text",
+ CellChangeTimes->{
+  3.749563086230362*^9, {3.7495633981792684`*^9, 3.749563592830261*^9}, {
+   3.749565335199274*^9, 3.7495653855192237`*^9}, {3.749565459889264*^9, 
+   3.7495654956391726`*^9}},ExpressionUUID->"45d63415-f5c2-429b-8c5e-\
+cd8bfd4bd9df"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"absjonespupil", " ", "=", " ", 
+   RowBox[{"Replace", "[", 
+    RowBox[{
+     RowBox[{"Abs", "[", "jonespupil", "]"}], ",", 
+     RowBox[{
+      RowBox[{"t_", "/;", 
+       RowBox[{"t", "\[Equal]", "0."}]}], "\[Rule]", "None"}], ",", 
+     RowBox[{"{", "4", "}"}]}], "]"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"argjonespupil", " ", "=", " ", 
+   RowBox[{"Replace", "[", 
+    RowBox[{
+     RowBox[{"Arg", "[", "jonespupil", "]"}], ",", 
+     RowBox[{
+      RowBox[{"t_", "/;", 
+       RowBox[{"t", "\[Equal]", "0."}]}], "\[Rule]", "None"}], ",", 
+     RowBox[{"{", "4", "}"}]}], "]"}]}], ";"}]}], "Input",
+ CellChangeTimes->{
+  3.7495631018007298`*^9, {3.74956477350965*^9, 3.7495647757296705`*^9}, {
+   3.7495648632796316`*^9, 3.7495648640794764`*^9}, {3.749565206239381*^9, 
+   3.7495652284128995`*^9}, {3.7495653035893507`*^9, 
+   3.7495653041348968`*^9}, {3.749565389399132*^9, 3.749565394359104*^9}},
+ CellLabel->
+  "In[302]:=",ExpressionUUID->"619e058f-1823-4a02-83eb-ea173d64354b"],
+
+Cell["\<\
+I\[CloseCurlyQuote]m going to make a plotting function to make this all easier\
+\>", "Text",
+ CellChangeTimes->{{3.749565522169071*^9, 3.7495655565891094`*^9}, {
+  3.7495657867092953`*^9, 3.749565798509058*^9}, {3.803994262153212*^9, 
+  3.803994272713212*^9}},ExpressionUUID->"344fca05-0a47-4e9e-b66c-\
+3f568d5a8b95"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"plotpupil", "[", 
+   RowBox[{"pupildata_", ",", "label_"}], "]"}], ":=", 
+  RowBox[{"ArrayPlot", "[", 
+   RowBox[{"pupildata", ",", 
+    RowBox[{"PlotLabel", "\[Rule]", "label"}], ",", 
+    RowBox[{"LabelStyle", "->", 
+     RowBox[{"Directive", "[", 
+      RowBox[{"Black", ",", "Bold", ",", "20"}], "]"}]}], ",", 
+    RowBox[{"PlotLegends", "\[Rule]", 
+     RowBox[{"BarLegend", "[", 
+      RowBox[{"Automatic", ",", 
+       RowBox[{"LabelStyle", "\[Rule]", " ", 
+        RowBox[{"Directive", "[", 
+         RowBox[{"Black", ",", "Bold", ",", "20"}], "]"}]}]}], "]"}]}], ",", 
+    RowBox[{"Background", "\[Rule]", " ", "White"}], ",", 
+    RowBox[{"ColorFunction", "\[Rule]", "\"\<Rainbow\>\""}]}], 
+   "]"}]}]], "Input",
+ CellChangeTimes->{{3.74956557645898*^9, 3.7495655835989876`*^9}, {
+  3.7495656173891697`*^9, 3.7495656313290253`*^9}, {3.803994054928648*^9, 
+  3.803994159251943*^9}, {3.803994191381942*^9, 3.803994233383574*^9}, {
+  3.803995296250846*^9, 3.803995340497952*^9}, {3.803995372810893*^9, 
+  3.803995376768572*^9}, {3.8157625022642803`*^9, 3.815762537334413*^9}, {
+  3.815775354123786*^9, 3.815775357723822*^9}},
+ CellLabel->"In[7]:=",ExpressionUUID->"c770f300-b35c-4903-8fb6-020f3dfc0ef9"],
+
+Cell["Now making axes label lists for plotting and title lists", "Text",
+ CellChangeTimes->{{3.8039942791937923`*^9, 
+  3.803994320384364*^9}},ExpressionUUID->"f40accec-e8f5-458c-b124-\
+81942b26a576"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"abspupils", "=", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{"absjonespupil", "\[LeftDoubleBracket]", 
+        RowBox[{"All", ",", "All", ",", "1", ",", "1"}], 
+        "\[RightDoubleBracket]"}], ",", 
+       RowBox[{"absjonespupil", "\[LeftDoubleBracket]", 
+        RowBox[{"All", ",", "All", ",", "1", ",", "2"}], 
+        "\[RightDoubleBracket]"}]}], "}"}], ",", 
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{"absjonespupil", "\[LeftDoubleBracket]", 
+        RowBox[{"All", ",", "All", ",", "2", ",", "1"}], 
+        "\[RightDoubleBracket]"}], ",", 
+       RowBox[{"absjonespupil", "\[LeftDoubleBracket]", 
+        RowBox[{"All", ",", "All", ",", "2", ",", "2"}], 
+        "\[RightDoubleBracket]"}]}], "}"}]}], "}"}]}], ";"}]], "Input",
+ CellChangeTimes->{{3.8039941087172537`*^9, 3.8039941228322678`*^9}, {
+  3.803994241873673*^9, 3.803994248203829*^9}},
+ CellLabel->
+  "In[311]:=",ExpressionUUID->"75b26352-fd1e-4cb5-995d-67199431e34b"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"argspupils", "=", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{"argjonespupil", "\[LeftDoubleBracket]", 
+        RowBox[{"All", ",", "All", ",", "1", ",", "1"}], 
+        "\[RightDoubleBracket]"}], ",", 
+       RowBox[{"argjonespupil", "\[LeftDoubleBracket]", 
+        RowBox[{"All", ",", "All", ",", "1", ",", "2"}], 
+        "\[RightDoubleBracket]"}]}], "}"}], ",", 
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{"argjonespupil", "\[LeftDoubleBracket]", 
+        RowBox[{"All", ",", "All", ",", "2", ",", "1"}], 
+        "\[RightDoubleBracket]"}], ",", 
+       RowBox[{"argjonespupil", "\[LeftDoubleBracket]", 
+        RowBox[{"All", ",", "All", ",", "2", ",", "2"}], 
+        "\[RightDoubleBracket]"}]}], "}"}]}], "}"}]}], ";"}]], "Input",
+ CellChangeTimes->{{3.803994347580585*^9, 3.803994359159601*^9}},
+ CellLabel->
+  "In[312]:=",ExpressionUUID->"a28db241-1000-4d6a-9138-7a8e0b4e3f2b"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"abstitles", "=", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{
+      "\"\<\!\(\*SubscriptBox[\(A\), \(xx\)]\)\>\"", ",", 
+       "\"\<\!\(\*SubscriptBox[\(A\), \(xy\)]\)\>\""}], "}"}], ",", 
+     RowBox[{"{", 
+      RowBox[{
+      "\"\<\!\(\*SubscriptBox[\(A\), \(yx\)]\)\>\"", ",", 
+       "\"\<\!\(\*SubscriptBox[\(A\), \(yy\)]\)\>\""}], "}"}]}], "}"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"argtitles", "=", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{
+      "\"\<\!\(\*SubscriptBox[\(\[Phi]\), \(xx\)]\)\>\"", ",", 
+       "\"\<\!\(\*SubscriptBox[\(\[Phi]\), \(xy\)]\)\>\""}], "}"}], ",", 
+     RowBox[{"{", 
+      RowBox[{
+      "\"\<\!\(\*SubscriptBox[\(\[Phi]\), \(yx\)]\)\>\"", ",", 
+       "\"\<\!\(\*SubscriptBox[\(\[Phi]\), \(yy\)]\)\>\""}], "}"}]}], "}"}]}],
+   ";"}]}], "Input",
+ CellChangeTimes->{{3.8039950410610228`*^9, 3.8039951274982347`*^9}, {
+  3.815762460512844*^9, 3.815762484626392*^9}, {3.815765676881321*^9, 
+  3.815765706020772*^9}},
+ CellLabel->"In[2]:=",ExpressionUUID->"3cba041b-48a7-405e-9e1e-339cbad66750"],
+
+Cell[BoxData[
+ RowBox[{"Table", "[", 
+  RowBox[{
+   RowBox[{"plotpupil", "[", 
+    RowBox[{
+     RowBox[{"abs", "[", 
+      RowBox[{"[", 
+       RowBox[{"i", ",", "j"}], "]"}], "]"}], ",", 
+     RowBox[{"abstitles", "[", 
+      RowBox[{"[", 
+       RowBox[{"i", ",", "j"}], "]"}], "]"}]}], "]"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"i", ",", "1", ",", "2"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"j", ",", "1", ",", "2"}], "}"}]}], "]"}]], "Input",
+ CellChangeTimes->{{3.8039951601846037`*^9, 3.803995279808601*^9}, 
+   3.8157623578093653`*^9, {3.8157624057214327`*^9, 3.815762427696129*^9}, {
+   3.815765635846156*^9, 3.815765649119899*^9}},
+ CellLabel->"In[8]:=",ExpressionUUID->"15a7101f-0491-496c-a3de-9b045deea49a"],
+
+Cell[BoxData[
+ RowBox[{"GraphicsGrid", "[", 
+  RowBox[{
+   RowBox[{"Table", "[", 
+    RowBox[{
+     RowBox[{"plotpupil", "[", 
+      RowBox[{
+       RowBox[{"args", "[", 
+        RowBox[{"[", 
+         RowBox[{"i", ",", "j"}], "]"}], "]"}], ",", 
+       RowBox[{"argtitles", "[", 
+        RowBox[{"[", 
+         RowBox[{"i", ",", "j"}], "]"}], "]"}]}], "]"}], ",", 
+     RowBox[{"{", 
+      RowBox[{"i", ",", "1", ",", "2"}], "}"}], ",", 
+     RowBox[{"{", 
+      RowBox[{"j", ",", "1", ",", "2"}], "}"}]}], "]"}], ",", 
+   RowBox[{"ImageSize", "\[Rule]", "600"}], ",", 
+   RowBox[{"Frame", "\[Rule]", "True"}]}], "]"}]], "Input",
+ CellChangeTimes->{{3.8039953935701513`*^9, 3.8039954105196543`*^9}, 
+   3.815762367267885*^9},ExpressionUUID->"e73602b9-24dc-4d0d-bae1-\
+4ce3bf2b0271"],
+
+Cell[BoxData[""], "Input",
+ CellChangeTimes->{{3.815762187084476*^9, 
+  3.815762187123851*^9}},ExpressionUUID->"5268e5ee-02d9-46ea-ac49-\
+3c7ffc86df9e"]
+}, Open  ]]
+}, Open  ]]
+},
+WindowSize->{904, 700},
+WindowMargins->{{Automatic, 0}, {Automatic, 42}},
+FrontEndVersion->"12.0 for Mac OS X x86 (64-bit) (April 8, 2019)",
+StyleDefinitions->"AiryStyle.nb"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[CellGroupData[{
+Cell[580, 22, 159, 3, 98, "Title",ExpressionUUID->"6990d6ed-3acb-4b34-8a57-4e827cb11198"],
+Cell[742, 27, 301, 5, 52, "Input",ExpressionUUID->"3f62292e-4a61-4638-84bf-937be0203c94"],
+Cell[CellGroupData[{
+Cell[1068, 36, 158, 3, 85, "Chapter",ExpressionUUID->"49ef00d7-c300-47b7-877e-f0eab8ac51e9"],
+Cell[1229, 41, 1174, 29, 94, "Input",ExpressionUUID->"30d45625-10f7-4b4e-a2f6-44247ea2322c"],
+Cell[2406, 72, 1068, 29, 94, "Input",ExpressionUUID->"8aa8bf7e-8342-4832-91c0-3e800459b27b"],
+Cell[3477, 103, 381, 8, 30, "Input",ExpressionUUID->"2a9e031b-0733-4566-a017-0b70b67a1053"]
+}, Open  ]],
+Cell[3873, 114, 154, 3, 85, "Chapter",ExpressionUUID->"228b88b3-a6b8-4501-8b7f-916c0ad7a30b"],
+Cell[4030, 119, 154, 3, 74, "Chapter",ExpressionUUID->"733d3a0a-e94e-4176-aec0-1303cc71e474"],
+Cell[CellGroupData[{
+Cell[4209, 126, 169, 3, 74, "Chapter",ExpressionUUID->"2ef5f54b-6dbe-4e9a-9044-d3457d99c843"],
+Cell[4381, 131, 951, 15, 127, "Text",ExpressionUUID->"45d63415-f5c2-429b-8c5e-cd8bfd4bd9df"],
+Cell[5335, 148, 1040, 25, 52, "Input",ExpressionUUID->"619e058f-1823-4a02-83eb-ea173d64354b"],
+Cell[6378, 175, 327, 6, 35, "Text",ExpressionUUID->"344fca05-0a47-4e9e-b66c-3f568d5a8b95"],
+Cell[6708, 183, 1245, 25, 94, "Input",ExpressionUUID->"c770f300-b35c-4903-8fb6-020f3dfc0ef9"],
+Cell[7956, 210, 200, 3, 35, "Text",ExpressionUUID->"f40accec-e8f5-458c-b124-81942b26a576"],
+Cell[8159, 215, 1016, 24, 52, "Input",ExpressionUUID->"75b26352-fd1e-4cb5-995d-67199431e34b"],
+Cell[9178, 241, 964, 23, 52, "Input",ExpressionUUID->"a28db241-1000-4d6a-9138-7a8e0b4e3f2b"],
+Cell[10145, 266, 1131, 30, 56, "Input",ExpressionUUID->"3cba041b-48a7-405e-9e1e-339cbad66750"],
+Cell[11279, 298, 725, 18, 30, "Input",ExpressionUUID->"15a7101f-0491-496c-a3de-9b045deea49a"],
+Cell[12007, 318, 783, 21, 52, "Input",ExpressionUUID->"e73602b9-24dc-4d0d-bae1-4ce3bf2b0271"],
+Cell[12793, 341, 152, 3, 30, "Input",ExpressionUUID->"5268e5ee-02d9-46ea-ac49-3c7ffc86df9e"]
+}, Open  ]]
+}, Open  ]]
+}
+]
+*)
+
