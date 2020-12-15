@@ -1,11 +1,11 @@
 function Irrad = AirCalRoutine_MKeditLSQ(amp,PSG_delta,PSG_theta,PSA_delta,PSA_theta,PSA_LP,nSteps)
 nLambda=length(PSG_delta);
 sizeX = length(amp)/nLambda;
-amp = reshape(amp,nLambda,sqrt(sizeX),sqrt(sizeX));
+amp = reshape(amp,nLambda,10,10);
 ThetaMotorGen = (0:nSteps-1)*2*pi/nSteps; 
 ThetaMotorAna = 4.9*ThetaMotorGen;
 %OUTPUT VARIABLE
-Irrad=zeros(nLambda,nSteps,sqrt(sizeX),sqrt(sizeX));
+Irrad=zeros(nLambda,nSteps,10,10);
 
 %INPUT VARIABLE
 %amp nLambdaxsizeXxsizeY

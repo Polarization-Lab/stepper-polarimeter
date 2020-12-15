@@ -5,7 +5,7 @@ function meandata = ReadCalImages(filepath,wavelength,ref,nSteps)
 %ref = 1x64 of mean reference fluxes normalized to first reference flux
 %nSteps = number of measurements taken (64 usually)
 
-fn = extractAfter(filepath,"Air_Calibrations\");
+fn = extractAfter(filepath,"Air_Calibrations\New_Diffuser\");
 wv = wavelength;
 
 for ii = 1:nSteps

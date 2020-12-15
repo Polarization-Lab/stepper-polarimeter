@@ -1,6 +1,6 @@
 data = zeros(31,2);
 data(:,1) = LambdaList'; 
-data(:,2) = da_rad';
+data(:,2) = dg_rad';
 x1=data(:,1);
 y=data(:,2); 
 X = [ones(size(x1)) x1];
@@ -21,9 +21,9 @@ patch([xval fliplr(xval)], [ylow fliplr(yupp)], 'k','EdgeColor','white')
 alpha(0.3)
 leg=legend('Observed values','Regression line','95% C.I');
 set(leg,'location','best')
-title('\delta_{PSA} vs \lambda')
+title('\delta_{PSG} vs \lambda')
 xlabel('\lambda (nm)', 'FontSize', fontSize);
-ylabel('\delta_{PSA}', 'FontSize', fontSize);
+ylabel('\delta_{PSG}', 'FontSize', fontSize);
 set(gcf,'color','white')
 bias=sum(y-x1)/length(y);
 tbl = table(y , x1)

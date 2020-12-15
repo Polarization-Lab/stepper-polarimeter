@@ -1,6 +1,6 @@
 function imgdata = ReadDataImagesNoRef(filepath, wavelength, nSteps)
 
-fn = extractAfter(filepath,"Air_Calibrations\");
+fn = extractAfter(filepath,"Air_Calibrations\New_Diffuser\");
 
 wv = wavelength;
 

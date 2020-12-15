@@ -9,8 +9,8 @@ function [ref_mean,ref_std,refVecs] = load_refdata(fn,wavelength,meas_num)
 
 %import dark field image
 group_name = strcat('/images/wave',num2str(wavelength));
-dark_ref = h5read(fn,strcat(group_name,'/darkref'));
-dark_ref = mean(dark_ref);
+dark_im = h5read(fn,strcat(group_name,'/darkref'));
+dark_ref = mean(dark_im);
 
 %allocate space 
 ref_mean = zeros(meas_num,1);

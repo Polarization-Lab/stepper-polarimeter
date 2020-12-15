@@ -10,9 +10,9 @@ ai = daq('ni') ;
 addinput(ai,'Dev2','ai1','Voltage');
 
 % Set the sample rate to 1000 Hz.
-ai.Rate = 20000;
+ai.Rate = 1000;
 % determine how many measurements to aquire 
-ref_size = exposure * 1000;
+ref_size = 1 * 1000;
 
 %calculate container sizes
 start(vid)
@@ -36,7 +36,7 @@ for i = 2:framesPerTrigger
     image = image + im(:,:,1,i);
 end
 image = image/framesPerTrigger;
-
+% imagesc(image)
 %calculate reference amplitude
 ref = mean(ref);
 
