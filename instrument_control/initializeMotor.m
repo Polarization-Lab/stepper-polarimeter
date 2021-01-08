@@ -32,8 +32,8 @@ PSA     = 'Group2' ;
 PSApos  =  'Group2.Pos';
 
 %Group Kill
- xps.GroupKill(PSG);
- xps.GroupKill(PSA);
+xps.GroupKill(PSG);
+xps.GroupKill(PSA);
 
 
 %initailizes stages or 'Groups'
