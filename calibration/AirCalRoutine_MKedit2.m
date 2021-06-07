@@ -25,9 +25,6 @@ for n=1:nLambda
         a = psaMM(1,:);%analyzer vector 1x4
         g = psgMM(:,1);%polarizance vector 4x1
         w = kron(a,g');%1x16 vector
-        if max(w,[],'all') > 1
-            true = 1;
-        end
 %         Irrad(n,kk,:,:) = squeeze(amp(nLambda,:,:))*(w*reshape(eye(4,4),16,1));%amp is factored out of W due to linearity  
         W(n,kk,:) = w;
         

@@ -1,4 +1,4 @@
-function W = AirCalRoutine_MKeditAmpCalW(amp,PSG_delta,PSG_theta,PSA_delta,PSA_theta,PSA_LP,nSteps)
+function W = AirCalRoutine_MKeditAmpCalW(PSG_delta,PSG_theta,PSA_delta,PSA_theta,PSA_LP,nSteps)
 
 % nSteps = input(64); %Last inputvec scalar is the measurement #
 ThetaMotorGen = (0:nSteps-1)*2*pi/nSteps; 

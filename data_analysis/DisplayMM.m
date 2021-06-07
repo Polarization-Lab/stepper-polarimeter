@@ -1,6 +1,6 @@
 function DisplayMM(mmVecs,nLambda,LambdaList,filename)
 
-mkdir(['D:\Measurements\Dichroic_Analysis\MM_img\45_Full' date]);
+mkdir(['D:\Measurements\Air_Calibrations\New_Diffuser\MM_img\FullAmp650' date]);
 fn = filename;
 % Display image MMs
 tic
@@ -22,19 +22,19 @@ for n = 1:nLambda
     t = (subplot(4,4,16).Position);
     colorbar('position', [t(1)+t(3) t(2) t(3)/3 t(4)*4.7] );
     sgtitle(['Dichroic 45' char(176) ' ' num2str(LambdaList(n)) 'nm' ])
-    F(n) = getframe(gcf);
-    saveas(gcf,fullfile(['D:\Measurements\Dichroic_Analysis\MM_img\45_Full' date],['Lambda_' num2str(LambdaList(n)) '_' date '.png']));
+%     F(n) = getframe(gcf);
+    saveas(gcf,fullfile(['D:\Measurements\Air_Calibrations\New_Diffuser\MM_img\FullAmp650' date],['Lambda_' num2str(LambdaList(n)) '_' date '.png']));
     close all
 end
-
-
-writerObj = VideoWriter(fn,'MPEG-4');
-writerObj.FrameRate = 1;
-
-open(writerObj);
-for i = 1:length(F)
-    frame = F(i);
-    writeVideo(writerObj,frame);
-end
-close(writerObj)
+% 
+% 
+% writerObj = VideoWriter(fn,'MPEG-4');
+% writerObj.FrameRate = 1;
+% 
+% open(writerObj);
+% for i = 1:length(F)
+%     frame = F(i);
+%     writeVideo(writerObj,frame);
+% end
+% close(writerObj)
 toc

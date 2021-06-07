@@ -27,16 +27,5 @@ for n=1:nLambda
         
     end
 end
-%amp is not in W to save space. To use Winv
-%measurement=rand(nLambda,nSteps,sizeX,sizeY);
-%M=zero(nLambda,15,sizeX*sizeY);
-%[~,W]=AirCalRoutine_MKedit2(blah);
-%for n=1:nLambda
-%Winv=pinv(squeeze(W(n,:,:));
-%M(n,:,:)=Winv*(reshape(measurements(k,:,:,:),nSteps,sizeX*sizeY)./repmat(amp(:)',[nSteps 1]));
-%end
-%ln38 the estimated amplitude of the source is in the demoninator of the measurements (pixel-by-pixel) before applying Winv b/c "amp" can be factored out of W due to linearity
-
-
 return
 

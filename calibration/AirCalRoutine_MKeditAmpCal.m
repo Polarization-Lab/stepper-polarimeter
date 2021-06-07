@@ -5,7 +5,7 @@ ThetaMotorGen = (0:nSteps-1)*2*pi/nSteps;
 ThetaMotorAna = 4.9*ThetaMotorGen;
 
 %OUTPUT VARIABLE lambda x measurements x 1 x 1
-Irrad=zeros(1,nSteps,1,1);
+Irrad=zeros(1,nSteps);
 
 %INPUT VARIABLE
 %amp 1x1
@@ -24,7 +24,7 @@ for kk = 1:nSteps
     a = psaMM(1,:);%analyzer vector 1x4
     g = psgMM(:,1);%polarizance vector 4x1
     w = kron(a,g');%1x16 vector 
-    Irrad(1,kk,:,:) = squeeze(amp(:,:))*(w*reshape(eye(4,4),16,1));%amp is factored out of W due to linearity  
+    Irrad(kk) = amp*(w*reshape(eye(4,4),16,1));%amp is factored out of W due to linearity  
 
 end
 

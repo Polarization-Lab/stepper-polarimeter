@@ -1,6 +1,6 @@
 % Stepper Calibration Code
 % Authors: Lisa Li, James Heath, Kira Hart
-% Last Updated: 2020/08/25
+% Last Updated: 2020/12/14
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %Clear variables
@@ -21,7 +21,7 @@ ROIy = 10;
 calibrationFilePath = 'D:\Measurements\Air_Calibrations\New_Diffuser\AirCalibration-06-Dec-2020.h5';
 testFilePath = 'D:\Measurements\Air_Calibrations\New_Diffuser\Dichroic45-07-Dec-2020.h5';
 %% Load Calibration data
-
+tic
 for ii = 1:length(LambdaList) %for loading all lambda(s)
 %Get h5 reference data
     Lambda = LambdaList(ii);
@@ -30,9 +30,10 @@ for ii = 1:length(LambdaList) %for loading all lambda(s)
 %Grab measured data from h5 file
     meandata(ii,:,:,:) = ReadCalImages(calibrationFilePath,Lambda,refVecs(ii,:),nSteps);
 end
+toc
 %% Set size of meandata (Maximum size is 10 x 10 due to memory)
 
-meandata = meandata(:,:,746:755,746:755); %Grab middle 10 x 10 section
+meandata = meandata(1,:,746:755,746:755); %Grab middle 10 x 10 section
 
 
 %% Fit Parameters
@@ -75,8 +76,8 @@ end
 %Create table in radians
 %% Separate fitted data into each desired fit value (angles in radians)
 Amp = caldata(1:PixelCount*nLambda); %Amplitude
-dg_rad = caldata(PixelCount*nLambda+1:PixelCount*nLambda+nLambda); %PSG retardance
-DelRad_g = caldata(PixelCount*nLambda+1+nLambda);                  %PSG theta
+dg_rad = caldata(PixelCount*nLambda+1:PixelCount*nLambda+nLambda);             %PSG retardance
+DelRad_g = caldata(PixelCount*nLambda+1+nLambda);                              %PSG theta
 da_rad = caldata(PixelCount*nLambda+2+nLambda:PixelCount*nLambda+1+2*nLambda); %PSA retardance
 DelRad_a = caldata(PixelCount*nLambda+2+2*nLambda);                            %PSA theta
 LP_Rad = caldata(PixelCount*nLambda+3+2*nLambda);                              %Linear Polarizer theta
@@ -144,7 +145,7 @@ sound(y,Fs)
 ampcaldata = reshape(Amp(:),31,10,10);
 
 %%
-
+imgdata = ROIimg;
 tic
 % nLambda=length(Lambda);
 M = zeros(nLambda,16,10*10);
@@ -165,7 +166,7 @@ for ii = 1:16
 end
 
 %% Create averaged scalar MM (Table form)
-AvgMMTable(mmVecs,450,LambdaList)
+AvgMMTable(mmVecs,670,LambdaList)
 
 %% Display image MMs
 
