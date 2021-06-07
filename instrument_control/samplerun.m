@@ -1,7 +1,7 @@
 %create HDF5 dataset
 
 %writefilepath
-fp = 'D:\Measurements\Air_Calibrations\New_Diffuser\'; %change
+fp = 'D:\Measurements\Air_Calibrations\test\'; %change
 date = date();
 starttime = datestr(now);
 
