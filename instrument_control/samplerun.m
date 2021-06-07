@@ -1,12 +1,12 @@
 %create HDF5 dataset
 
 %writefilepath
-fp = 'D:\Measurements\Air_Calibrations\test\'; %change
+fp = 'D:\Measurements\Air_Calibrations\Summer21\'; %change
 date = date();
 starttime = datestr(now);
 
-usernotes = 'taken by jheath ; Dich45'; %change
-fn = 'Dichroic45'; %change
+usernotes = 'taken by kshanks ; testing error measurement, instrument not aligned'; %change
+fn = 'june72021'; %change
 name = strcat(fp,fn,'-',date,'.h5');
 
 num_meas = 64;
