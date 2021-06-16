@@ -1,4 +1,27 @@
 function [Irrad,W] = AirCalRoutine_MKedit2(amp,PSG_delta,PSG_theta,PSA_delta,PSA_theta,PSA_LP,nSteps)
+%%%%%%%%%%%%%%%%%%%%%%%%% SUMMARY %%%%%%%%%%%%%%%%%%%%%%%%%
+% Returns the Irradiance values (although ln 48 currently commented) and unscaled W matrix parameterized by the properties of optical components given as input. The W matrix is not scaled by the amplitude to save space. The unscaled W matrix is the same for all pixels and only needs to be scaled by the amplitude.
+
+%%%%%%%%%%%%%%%%%%%%%%%%% INPUT VARIABLES %%%%%%%%%%%%%%%%%%%%%%%%% 
+% amp: nLambdaxsizeXxsizeX tensor of amplitude at each wavelength and each pixel
+
+% PSG_delta: nLambdax1 vector retardance magnitude on generator side at each wavelength
+
+% PSG_theta: scalar-valued orientation of retarder on generator side - not wavelength dependent
+
+% PSA_delta: nLambdax1 vector retardance magnitude on analyzer side at each wavelength
+
+% PSA_theta: scalar-valued orientation of retarder on analyzer side - not wavelength dependent
+
+% PSA_LP: scalar-valued orientation of linear polarizer on analyzer side - not wavelength dependent
+
+% nSteps: scalar-valued number of polarimetric measurements
+
+%%%%%%%%%%%%%%%%%%%%%%%%% OUTPUT VARIABLES %%%%%%%%%%%%%%%%%%%%%%%%%
+% Irrad: nLambdaxnStepsxnStepsxsizeXxsizeX tensor of polarimetric measurements which are images at each wavelength and PSA/PSG pair
+
+% W: nLambdaxnStepsx16 tensor of polarimetric measurement matrices for each wavelength. NTB that the returned value of W does not depend on amplitude and the usage of the unscaled W is shown in ln54-64.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 nLambda=length(PSG_delta);
 % [~,sizeX]=size(amp);
 sizeX = length(squeeze(amp(1,1,:)));
