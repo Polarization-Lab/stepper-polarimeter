@@ -9,7 +9,7 @@ for ii = 1:nSteps
 end
 
 
-video = VideoWriter('aircal','Motion JPEG AVI')
+video = VideoWriter('aircal')
 
 open(video)
 
