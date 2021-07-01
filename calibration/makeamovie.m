@@ -7,7 +7,7 @@ filepath = '/Users/jaclynjohn/Documents/MATLAB/aircal.h5'; %change
 wavelength = 460;
 nSteps = 64;
 
-video = VideoWriter('aircal')
+video = VideoWriter('aircal') %change to the desired name of the avi video that will be saved
 open(video)
 
 for ii = 1:nSteps 
