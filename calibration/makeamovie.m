@@ -13,6 +13,7 @@ open(video)
 for ii = 1:nSteps 
     group_name   = strcat('/images/wave',num2str(wavelength),'/meas',num2str(ii));
     images = h5read(filepath,strcat(group_name,'/imagedata'));
+    pause(0.5);
     imagesc(images)
     frame = getframe(gcf)
     writeVideo(video,frame)
