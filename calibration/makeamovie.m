@@ -3,22 +3,24 @@ function video = makeamovie(filepath,wavelength,nSteps)
 %wavelength 
 %nSteps for stepper should be 64 
 
+filepath = '/Users/jaclynjohn/Documents/MATLAB/aircal.h5';
+wavelength = 460;
+nSteps = 64;
+
+video = VideoWriter('aircal')
+open(video)
+
 for ii = 1:nSteps 
     group_name   = strcat('/images/wave',num2str(wavelength),'/meas',num2str(ii));
     images = h5read(filepath,strcat(group_name,'/imagedata'));
+    imagesc(images)
+    frame = getframe(gcf)
+    writeVideo(video,frame)
 end
 
 
-video = VideoWriter('aircal')
-
-open(video)
+close(video)
 
 
-for k = 1:nSteps  
-   imagesc(images)
-   frame = getframe(gcf);
-   writeVideo(video,frame);
-end
+%to do: slow down frame rate
 
-%not done working on this
-%will be used to look at all images from a measurement in a movie format
