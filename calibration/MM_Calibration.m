@@ -1,9 +1,10 @@
-function [caldata,W] = MM_Calibration(xBegROI,xEndROI,yBegROI,yEndROI,nLambda,LambdaList,nSteps)
+function [caldata,W,NRMSD,PixelCount] = MM_Calibration(calibrationFilePath,xBegROI,xEndROI,yBegROI,yEndROI,LambdaList,nSteps)
 %% Load Calibration data
 tic
 for ii = 1:length(LambdaList) %for loading all lambda(s)
 %Get h5 reference data
     Lambda = LambdaList(ii);
+    disp(LambdaList(ii))
     [~,~,refVecs(ii,:)] = load_refdata(calibrationFilePath,Lambda,nSteps);
 
 %Grab measured data from h5 file
@@ -17,10 +18,9 @@ airMeasurement = airMeasurement(1,:,yBegROI:yEndROI,xBegROI:xEndROI); %Grab midd
 
 %% Fit Parameters
 
-clc;
-
 %Find the maximum value of air measurements
 mx = max(airMeasurement,[],'all');
+mn = min(airMeasurement,[],'all'); %min for solving for NRMSD
 %Get amount of pixels
 PixelCount = length(airMeasurement(1,1,:));
 
@@ -37,7 +37,7 @@ fitguess = [2*mx*ones([1,PixelCount*nLambda]), 2*pi/3*ones(1,nLambda), 0, 2*pi/3
 %% Curve fitting
 %Least squares curve fitting and storing into caldata
 tic
-[fits,resnorm,res] = lsqcurvefit(func, fitguess, nSteps, airMeasurement,lb,ub);
+[caldata,resnorm,res] = lsqcurvefit(func, fitguess, nSteps, airMeasurement,lb,ub);
 caldata(:)=fits(:); %Grab fitted data
 toc
 
@@ -49,7 +49,9 @@ sound(y,Fs)
 %%
 %RMSE of data
 for ii = 1:nLambda
-RMSE_var(ii) = std(res(ii,:)); %will need to fix size (1 x nLambda)
+    mx = max(airMeasurement(ii,:,:,:),[],'all');
+    mn = min(airMeasurement(ii,:,:,:),[],'all');
+    NRMSD(ii) = 100*sqrt(mean(res(ii,:).^2))/(mx-mn); %normalized %will need to fix size (1 x nLambda)
 end
 %Grab caldata for tables, plotting, and psgMM/psaMM
 %Create table in radians
