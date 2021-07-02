@@ -1,7 +1,7 @@
 function video = makeamovie(filepath,wavelength)
 %filpath - to h5 file where measurement data is held 
 %wavelength 
-%nSteps for stepper should be 64 
+%number of frames for stepper measurement should be 64 
 
 filepath = '/Users/jaclynjohn/Documents/MATLAB/aircal.h5'; %change 
 wavelength = 460;
