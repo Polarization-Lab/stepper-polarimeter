@@ -13,7 +13,7 @@ end
 toc
 %% Set size of meandata (Maximum size is 10 x 10 due to memory)
 
-airMeasurement = airMeasurement(1,:,yBegROI:yEndROI,xBegROI:xEndROI); %Grab middle 10 x 10 section
+airMeasurement = airMeasurement(:,:,yBegROI:yEndROI,xBegROI:xEndROI); %Grab middle 10 x 10 section
 
 
 %% Fit Parameters
