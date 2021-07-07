@@ -79,7 +79,7 @@ title('\delta_{a} radians');
 xlabel('\lambda (nm)')
 %% Plot RMSE
 figure(3)
-errorbar(LambdaList,RMSE_var);
+errorbar(LambdaList,NRMSD);
 title('RMSE vs Lambda');
 xlabel('\lambda (nm)')
 %% Plot amplitude Fits
