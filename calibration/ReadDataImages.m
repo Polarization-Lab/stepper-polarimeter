@@ -1,4 +1,4 @@
-function [imgdata ROI_imgdata] = ReadDataImages(filepath, wavelength,ref,nSteps)
+function [imgdata ROI_imgdata] = ReadDataImages(fn, wavelength,ref,nSteps)
 
 %fn = extractAfter(filepath,"\New_Diffuser\");
 
