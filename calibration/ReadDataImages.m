@@ -1,6 +1,6 @@
 function [imgdata ROI_imgdata] = ReadDataImages(filepath, wavelength,ref,nSteps)
 
-fn = extractAfter(filepath,"\New_Diffuser\");
+%fn = extractAfter(filepath,"\New_Diffuser\");
 
 wv = wavelength;
 
