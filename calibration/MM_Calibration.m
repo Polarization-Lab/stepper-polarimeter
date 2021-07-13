@@ -47,7 +47,7 @@ load handel
 sound(y,Fs)
 
 %%
-%RMSE of data
+%NRMSD of data
 for ii = 1:nLambda
     mx = max(airMeasurement(ii,:,:,:),[],'all');
     mn = min(airMeasurement(ii,:,:,:),[],'all');
@@ -80,7 +80,7 @@ xlabel('\lambda (nm)')
 %% Plot RMSE
 figure(3)
 errorbar(LambdaList,NRMSD);
-title('RMSE vs Lambda');
+title('NRMSD vs Lambda');
 xlabel('\lambda (nm)')
 %% Plot amplitude Fits
 close all;
