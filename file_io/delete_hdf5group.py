@@ -1,5 +1,8 @@
 import h5py 
 
+#NOTE THAT IF GROUP IS NOT PRESENT FUNCTION WILL THROW ERROR
+#funct coupld be improved to check for presence of group before attempting deletion
+
 def delete_groups(fn, group_list):
     #first print current datasets
     print('current datasets present')
