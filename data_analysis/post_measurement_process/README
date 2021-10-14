@@ -6,3 +6,6 @@ For the structure and contents of these files, see: Wiki, File Structure and I/O
 
 Run the following codes:
 
+GenMuellerfromSteppersPars.m 
+  
+   this code runs GenWMatrixfromStepperPars.m
