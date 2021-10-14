@@ -1,1 +1,5 @@
-text
+Two files are needed for data analysis:
+  1. air measurement hdf5 file 
+  2. sample measurement hdf5 file 
+  
+For the structure and contents of these files, see wiki 
