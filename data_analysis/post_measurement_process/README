@@ -2,10 +2,19 @@ Two files are needed for data analysis:
   1. air measurement hdf5 file 
   2. sample measurement hdf5 file 
   
-For the structure and contents of these files, see: Wiki, File Structure and I/O
+For the structure and contents of these files, see: Wiki, File Structure and I/O (https://github.com/Polarization-Lab/stepper-polarimeter/wiki/File-Structure)
 
 Run the following codes:
 
 GenMuellerV2.m 
+
+This takes an air measurement file path and a sample measurement file path 
   
-   this code runs GenWMatrixfromStepperPars.m
+    The air measurement file path is used when the code runs GenWMatrixfromStepperPars.m, which reads the fit variables saved in the h5 file from the air calibration process 
+    and makes a W matrix
+    
+With the W matrix and the measurement, it uses eigenvalue decomposition to solve for a Mueller matrix and saves into it the h5 file, along with the coherency values
+
+
+   
+
