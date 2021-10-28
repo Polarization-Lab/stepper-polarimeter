@@ -41,12 +41,18 @@ Depol=zeros(nLambda,nPixels);
 Pol_mag=zeros(nLambda,nPixels);
 Di_mag=zeros(nLambda,nPixels);
 
+
+
 for n=1:nLambda
      I(n,:,:)=h5read(fn_sample,strcat('/Mueller',num2str(index),'/wave',num2str(LambdaList(n))));
+     %I = reshape(I,[4 4 sqrt(nPixels) sqrt(nPixels)]);
+     %inverse fesnel mirror MM, uncoated aluminum at 45 degrees, 532 nm 
+     %F=[1.089729264540746 0.03105722428292043 0 0;0.03105722428292043 1.0897292645407457 0 0;0 0 -1.064747642529994 -0.22990819155300934; 0 0 0.22990819155300934 -1.064747642529994];
+     %I=pagemtimes(I,F);
+     %I = reshape(I,[1 16 nPixels]);
      C(n,:,:,:)=h5read(fn_sample,strcat('/Real_CoherencySingularVectors',num2str(index),'/wave',num2str(LambdaList(n))));
      C(n,:,:,:)=squeeze(C(n,:,:,:))+1i*h5read(fn_sample,strcat('/Imag_CoherencySingularVectors',num2str(index),'/wave',num2str(LambdaList(n))));
      S(n,:,:)= h5read(fn_sample,strcat('/CoherencySingularValues',num2str(index),'/wave',num2str(LambdaList(n))));
-
      Inorm=squeeze(I(n,:,:)./repmat(I(n,1,:),[1 16]));%normalized MM
 	 Depol(n,:)=sqrt(sum((Inorm-repmat(ID(:),[1 nPixels])).^2));%L2 norm between ideal depolarizer and normalized MM
      Pol_mag(n,:)=sqrt(Inorm(2,:).^2+Inorm(3,:).^2+Inorm(4,:).^2);
@@ -57,18 +63,18 @@ end
 %Plotting example for n=nLambda
 
 figure;
-subplot(2,2,1);
+subplot(1,3,1);
 imagesc(reshape(Pol_mag,sqrt(nPixels),sqrt(nPixels)),[0 1]);axis square; axis off;colormap jet;colorbar;
-title('|Polarizance|','FontSize',30);
-subplot(2,2,2);
+title('|Polarizance|','FontSize',15);
+subplot(1,3,2);
 imagesc(reshape(Di_mag,sqrt(nPixels),sqrt(nPixels)),[0 1]);axis square; axis off;colormap jet;colorbar;
-title('|Diattenuation|','FontSize',30);
-subplot(2,2,3);
+title('|Diattenuation|','FontSize',15);
+subplot(1,3,3);
 imagesc(reshape(Depol,sqrt(nPixels),sqrt(nPixels)),[0 1]);axis square; axis off;colormap jet;colorbar;
-title('Depolarization Index','FontSize',25);
-subplot(2,2,4);
-imagesc(reshape(I(1,1,:),sqrt(nPixels),sqrt(nPixels)));axis square; axis off;colormap jet;colorbar;
-title('M_{00}','FontSize',30);
+title('Depolarization Index','FontSize',12);
+%subplot(2,2,4);
+%imagesc(reshape(I(1,1,:),sqrt(nPixels),sqrt(nPixels)));axis square; axis off;colormap jet;colorbar;
+%title('M_{00}','FontSize',25);
 w=char(fn_sample);
 cmd=sprintf('print -dpdf %s',['''',w(1:end-3),sprintf('_MMpars%d_Lambda%d.pdf',index,LambdaList(n)),'''']);
 fig = gcf;
@@ -105,7 +111,7 @@ figure;
         end
         tempImg=[tempImg,tempRow];
 	end
-    t=max(abs(I(:)));
+    t=prctile((abs(I(:))),90); %this adjusts the colorbar so highest value is in the 90th percentile. this helps with looking at more detail when max value doesn't appear in image that much 
     imagesc(tempImg,[-t,t]);axis square; axis off; colormap(cmap);colorbar;
     
 cmd=sprintf('print -dpdf %s',['''',w(1:end-3),sprintf('_MM%d_Lambda%d.pdf',index,LambdaList(n)),'''']);
@@ -116,11 +122,13 @@ fig.PaperSize = [fig_pos(3) fig_pos(4)];
 set(gcf,'renderer','painters');drawnow;
 eval(cmd); close all;
     
+%% 
+
 figure;
 S=reshape(S,sqrt(nPixels),sqrt(nPixels),4);
 for nn=1:4
     subplot(2,2,nn)
-    imagesc(S(:,:,nn));c=colorbar;axis off;axis equal;set(c,'FontSize',25);title(sprintf('\\lambda_{%d}',nn),'FontSize',25);
+    imagesc(S(:,:,nn));c=colorbar;axis off;axis equal;set(c,'FontSize',15);title(sprintf('\\lambda_{%d}',nn),'FontSize',25);
 end
 cmd=sprintf('print -dpdf %s',['''',w(1:end-3),sprintf('_EigenSpectrum%d_Lambda%d.pdf',index,LambdaList(n)),'''']);
 fig = gcf;
@@ -141,6 +149,11 @@ PI(nn,m,:,:) = 0.5*U*(kron(reshape(U(nn,:),2,2),conj(reshape(U(m,:),2,2))))*U';
 end
 PI=reshape(PI,16,16);
 
+%% scaling MM with eigenvalue weight -jaclyn
+
+SumM = zeros(((sqrt(nPixels)+2)*4),((sqrt(nPixels)+2)*4)); %create an empty array to add the eigenmatrices to
+%size is the size of image create in the loop below (with borders)
+
 for z=1:4
     M=zeros(16,nPixels);
     for nn=1:nPixels
@@ -148,7 +161,12 @@ for z=1:4
         temp=temp*temp';
         M(:,nn)=reshape(temp,1,16)*PI';
     end
-    M=reshape(M,16,sqrt(nPixels),sqrt(nPixels));
+    M=reshape(M,16,sqrt(nPixels),sqrt(nPixels)).*permute((repmat(squeeze(S(:,:,z)),[1 1 16])),[3 1 2]);
+    %M = reshape(M,[4 4 sqrt(nPixels) sqrt(nPixels)]);
+    %inverse fesnel mirror MM, uncoated aluminum at 45 degrees, 532 nm 
+    %F=[1.089729264540746 0.03105722428292043 0 0;0.03105722428292043 1.0897292645407457 0 0;0 0 -1.064747642529994 -0.22990819155300934; 0 0 0.22990819155300934 -1.064747642529994];
+    %M = pagemtimes(M,F);
+    %M = reshape(M,[16 sqrt(nPixels) sqrt(nPixels)]);
     figure;
     tempImg=[];
     for nn=1:4
@@ -161,17 +179,31 @@ for z=1:4
         end
         tempImg=[tempImg,tempRow];
 	end
-    t=max(abs(M(:)));
+    t=prctile((abs(M(:))),90);
     imagesc(tempImg,[-t,t]);axis square; axis off; colormap(cmap);colorbar;
-    
-cmd=sprintf('print -dpdf %s',['''',w(1:end-3),sprintf('_%dMM%d_Lambda%d.pdf',z,index,LambdaList(n)),'''']);
+    SumM = SumM + tempImg; %adding eigen matrix to SumM each loop iteration 
+   
+cmd=sprintf('print -dpdf %s',['''',w(1:end-3),sprintf('_%dMM%d_EigenSCALEDLambda%d.pdf',z,index,LambdaList(n)),'''']);
 fig = gcf;
 fig.PaperPositionMode = 'auto';
 fig_pos = fig.PaperPosition;
 fig.PaperSize = [fig_pos(3) fig_pos(4)];
 set(gcf,'renderer','painters');drawnow;
 eval(cmd); close all;
+
 end
 
-return
+%plotting the sum of the eigenmatrices to compare to original MM 
 
+t=prctile((abs(I(:))),90);
+imagesc(SumM,[-t,t]);axis square; axis off; colormap(cmap);colorbar;
+cmd=sprintf('print -dpdf %s',['''',w(1:end-3),sprintf('_%dMM%d_EigenSUMLambda%d.pdf',z,index,LambdaList(n)),'''']);
+fig = gcf;
+fig.PaperPositionMode = 'auto';
+fig_pos = fig.PaperPosition;
+fig.PaperSize = [fig_pos(3) fig_pos(4)];
+set(gcf,'renderer','painters');drawnow;
+eval(cmd); close all;
+
+
+return
