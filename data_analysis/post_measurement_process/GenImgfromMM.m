@@ -34,7 +34,6 @@ end
 
 %analyzes 4x1 incident and 4x1 exiting stokes vector on 4x4 mueller matrix for
 %each pixel and compiles into image
-%So = output stokes vector
 for n = 1:sqrt(nPixels)
     for m = 1:sqrt(nPixels)
        %So = MM(:,:,n,m)*Si;%4x1
