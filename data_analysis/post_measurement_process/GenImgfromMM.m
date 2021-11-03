@@ -41,7 +41,9 @@ for n = 1:sqrt(nPixels)
     end
 end
 
-%plotting image, change title depending on stokes vector
+%plotting image
+%change title depending on stokes vector
+%change limits of colorbar accordingly
 
 for n = 1:nLambda
     image = imrotate(image,90); %waveoptics has a different orientation than us
