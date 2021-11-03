@@ -1,9 +1,9 @@
-function [] = GenImgfromMM(fn_sample,Si)
+function [] = GenImgfromMM(fn_sample,Si,So)
 
 %Si: 4x1 of  incident Stokes vector, input polarization state
 %fn_sample: path to MM sample file 
 %function outputs image generated from MM from a given stokes vector 
-%NOTE: change title of figure in line 49 for different input vectors
+%NOTE: change title of figure in line 51 for different input vectors
 
 PSG=h5readatt(fn_sample,'/images','PSG_positions');
 nSteps = length(PSG);
@@ -37,7 +37,7 @@ end
 %So = output stokes vector
 for n = 1:sqrt(nPixels)
     for m = 1:sqrt(nPixels)
-       So = MM(:,:,n,m)*Si;%4x1
+       %So = MM(:,:,n,m)*Si;%4x1
        image(n,m) = Si.'*MM(:,:,n,m)*So; %dimensions of ROI. Si is transposed
     end
 end
@@ -46,8 +46,9 @@ end
 
 for n = 1:nLambda
     image = imrotate(image,90); %waveoptics has a different orientation than us
+    imagesc(image,[0 4e5]);colormap gray;colorbar;axis off
+    figure(n);
     imagesc(image);colormap gray;colorbar
     figure(n);
-    title(sprintf('Horizontal Polarized Light: \\lambda=%d[nm]',LambdaList(n)),'FontSize',20);
+    title(sprintf('Verically Polarized Light: \\lambda=%d[nm]',LambdaList(n)),'FontSize',20);
 end
- 
