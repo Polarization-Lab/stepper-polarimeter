@@ -34,8 +34,3 @@ GenImgfromMM
     
     This takes an input and output stokes vector and uses the Mueller matrix to generate an image of the sample for a certain PSA/PSG orientation
     The input Stokes simulates the PSG and the outut stokes vector simulates the PSA
-
-
-
-   
-
