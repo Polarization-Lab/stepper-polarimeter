@@ -7,24 +7,34 @@ For the structure and contents of these files, see: Wiki, File Structure and I/O
 Run the following codes:
 
 TO ANALYZE:
+
 GenMuellerV2.m 
 
-This takes an air measurement file path and a sample measurement file path 
+    This takes an air measurement file path and a sample measurement file path 
   
     The air measurement file path is used when the code runs GenWMatrixfromStepperPars.m, which reads the fit variables saved in the h5 file from the air calibration process 
     and makes a W matrix
     
-With the W matrix and the measurement, it uses eigenvalue decomposition to solve for a Mueller matrix and saves into it the h5 file, along with the coherency values
+    With the W matrix and the measurement, it uses eigenvalue decomposition to solve for a Mueller matrix and saves into it the h5 file, along with the coherency values
 
 DO NOT RUN THIS CODE MULTIPLE TIMES FOR SAME ROI
   The code is designed to create multiple indexes for every run, so we can get MMs for different ROI. Running it over and over again will bloat the file with the same MM. 
   Run it once, then run the next code for different visualization preferences
 
 TO VIEW:
+
 ViewMMh5.m
 
-This takes the analyzed data, like the MM and coherency values from the sample h5 file, and creates the image of the MM and parameters. 
-This can be run as many times as needed, as it saves the images in the filepath and overwrites with the most current run
+    This takes the analyzed data, like the MM and coherency values from the sample h5 file, and creates the image of the MM and parameters. 
+    This can be run as many times as needed, as it saves the images in the filepath and overwrites with the most current run
+
+Other Analysis:
+
+GenImgfromMM 
+    
+    This takes an input and output stokes vector and uses the Mueller matrix to generate an image of the sample for a certain PSA/PSG orientation
+    The input Stokes simulates the PSG and the outut stokes vector simulates the PSA
+
 
 
    
