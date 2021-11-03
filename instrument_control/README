@@ -1,1 +1,29 @@
-These functions are all involved in instrument control
+These functions are all involved in instrument control.
+
+The most used codes will be the following:
+
+  initialize
+    
+      Self-explanatory, this initializing everything, like the camera and monochromater. This must be run before anything is done 
+  
+  changeWavelength.m
+   
+      One input of this function is the desired wavelength of the monochromator. COMmono is interface between MATLAB and device, this stays the same in function input.
+  
+  NI_shutter_Jake.m
+  
+      This open the stepper shutter. Position inputs are 0, if open shutter is desired and 1 if closed shutter is desired.
+ 
+  solve_exposure/find_exposure
+    
+      These are options for finding the best exposure times. It takes a trial and error process. Input the wavelength needed and change the exposure range in the code
+      Then run it over and over again until you get to the point where the exposure time/counts plot flattens. Pick an exposure before this peak
+      It must be high enough to get a lot of light and low enough that it is not overexposed. The flattening region will be overexposed.
+      Repeat for each wavelength needed for measurement. (Usually, do 400-800nm in 50nm increments for air measurement. Sample measurement wavelengths will depend)
+      
+  samplerun 
+  
+      This runs wavelengthSweep.m and takes a measurement and saves an h5 file to the filepath, as well as raw image videos and intensity plot videos (runs makeamovie.m script) 
+      Change filepath and enter proper wavelengths and exposure times (found from the previous code).
+      
+    
