@@ -54,7 +54,7 @@ for n=1:nLambda
      C(n,:,:,:)=squeeze(C(n,:,:,:))+1i*h5read(fn_sample,strcat('/Imag_CoherencySingularVectors',num2str(index),'/wave',num2str(LambdaList(n))));
      S(n,:,:)= h5read(fn_sample,strcat('/CoherencySingularValues',num2str(index),'/wave',num2str(LambdaList(n))));
      Inorm=squeeze(I(n,:,:)./repmat(I(n,1,:),[1 16]));%normalized MM
-	 Depol(n,:)=sqrt(sum((Inorm-repmat(ID(:),[1 nPixels])).^2));%L2 norm between ideal depolarizer and normalized MM
+	Depol(n,:)=sqrt(sum((Inorm-repmat(ID(:),[1 nPixels])).^2))/sqrt(3);%L2 norm between ideal depolarizer and normalized MM
      Pol_mag(n,:)=sqrt(Inorm(2,:).^2+Inorm(3,:).^2+Inorm(4,:).^2);
      Di_mag(n,:)=sqrt(Inorm(5,:).^2+Inorm(9,:).^2+Inorm(13,:).^2);
 end
