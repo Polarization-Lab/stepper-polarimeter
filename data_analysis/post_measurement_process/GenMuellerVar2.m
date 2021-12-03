@@ -72,7 +72,7 @@ S=zeros(nPixels,4);
 
 for n=1:nLambda
     for nn=1:nPixels
-        [UC(nn,:,:),D] = svd(reshape(C(n,nn,:,:),4,4));%C is Hermitian
+        [UC(nn,:,:),D] = eig(reshape(C(n,nn,:,:),4,4));%C is Hermitian
         S(nn,:)=diag(D);
     end
     h5create(fn_sample,strcat('/Real_CoherencySingularVectors',num2str(index),'/wave',num2str(LambdaList(n))),[nPixels,4,4]);
