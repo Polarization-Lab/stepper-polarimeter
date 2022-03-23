@@ -12,9 +12,10 @@ The most used codes will be the following:
   
   NI_shutter_Jake.m
   
-      This open the stepper shutter. Position inputs are 0, if open shutter is desired and 1 if closed shutter is desired.
+      This open the stepper shutter. Position inputs are 0, if open shutter is desired and 1 if closed shutter is desired. Note: this script only works in R2020 and beyond
+      so this needs to be executed externally
  
-  solve_exposure/find_exposure
+  solve_exposure
     
       These are options for finding the best exposure times. It takes a trial and error process. Input the wavelength needed and change the exposure range in the code
       Then run it over and over again until you get to the point where the exposure time/counts plot flattens. Pick an exposure before this peak
