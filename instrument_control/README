@@ -1,5 +1,7 @@
 These functions are all involved in instrument control.
 
+Note: to view video feed, execute preview(vid) in the command line after initialization
+
 The most used codes will be the following:
 
   initialize
