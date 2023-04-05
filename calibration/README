@@ -1,7 +1,5 @@
 Calibration Process (after doing an air measurement):
 
-Run the following:
-
 GenFit2AirMeasVar2.m
   
     This function needs an air measurement file path and a repetition number, which will determine how many times the code runs the algorithm to pick the best fit.
