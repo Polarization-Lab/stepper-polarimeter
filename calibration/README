@@ -1,6 +1,6 @@
-Calibration Process:
+Calibration Process (after doing an air measurement):
 
-Run the following code:
+Run the following:
 
 GenFit2AirMeasVar2.m
   
