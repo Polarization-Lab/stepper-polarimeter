@@ -4,6 +4,6 @@ Run the following code:
 
 GenFit2AirMeasVar2.m
   
-    This function needs an air measurement file path and a repitition number, which will determine how many times the code runs the fitting algorithm to pick the best option.
+    This function needs an air measurement file path and a repetition number, which will determine how many times the code runs the algorithm to pick the best fit.
     It will save the resulting fit parameters into the h5file of the air measurement, under a new dataset /cal, which will be used in the post measurement process
     
