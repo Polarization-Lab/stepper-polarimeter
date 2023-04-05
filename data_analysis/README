@@ -12,13 +12,12 @@ GenMuellerV2.m
 
     This takes an air measurement file path and a sample measurement file path 
   
-    The air measurement file path is used when the code runs GenWMatrixfromStepperPars.m, which reads the fit variables saved in the h5 file from the air calibration process 
-    and makes a W matrix
+    The air measurement file path is used when the code runs GenWMatrixfromStepperPars.m, which reads the fit variables saved in the h5 file from the air calibration process and makes a W matrix
     
     With the W matrix and the measurement, it uses eigenvalue decomposition to solve for a Mueller matrix and saves into it the h5 file, along with the coherency values
 
 DO NOT RUN THIS CODE MULTIPLE TIMES FOR SAME ROI
-  The code is designed to create multiple indexes for every run, so we can get MMs for different ROI. Running it over and over again will bloat the file with the same MM. 
+  The code is designed to create multiple indexes for every excecution, so we can get MMs for a different ROI. Running it over and over again will bloat the file with the same MM. 
   Run it once, then run the next code for different visualization preferences
 
 TO VIEW:
